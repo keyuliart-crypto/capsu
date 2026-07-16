@@ -1,0 +1,1668 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capsu.ai 试用注册流程场景 Demo</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #14202b;
+        --muted: #637386;
+        --line: #d8e2e8;
+        --page: #f6f8f5;
+        --panel: #ffffff;
+        --soft: #eff5f4;
+        --teal: #218276;
+        --teal-dark: #17665d;
+        --blue: #315f95;
+        --blue-soft: #edf5ff;
+        --amber: #f3bd4e;
+        --amber-soft: #fff7e7;
+        --coral: #d76751;
+        --coral-soft: #fff0ec;
+        --green-soft: #e8f6f1;
+        --shadow: 0 18px 46px rgba(20, 32, 43, 0.1);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--page);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .shell {
+        display: grid;
+        grid-template-columns: 330px minmax(0, 1fr);
+        min-height: 100vh;
+      }
+
+      .control {
+        position: sticky;
+        top: 0;
+        z-index: 80;
+        height: 100vh;
+        overflow-y: auto;
+        padding: 18px;
+        border-right: 1px solid var(--line);
+        background: #ffffff;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 18px;
+        font-size: 18px;
+        font-weight: 850;
+      }
+
+      .logo {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        color: #ffffff;
+        background: var(--teal);
+        font-weight: 900;
+      }
+
+      .control-section {
+        margin-bottom: 14px;
+        padding: 13px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fbfcfd;
+      }
+
+      .control-section h2 {
+        margin: 0 0 10px;
+        font-size: 14px;
+      }
+
+      .control-section p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .label {
+        display: block;
+        margin: 12px 0 7px;
+        color: #2b3a48;
+        font-size: 12px;
+        font-weight: 850;
+      }
+
+      .choice-grid {
+        display: grid;
+        gap: 7px;
+      }
+
+      .choice-grid.two {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .choice {
+        min-height: 38px;
+        padding: 8px 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--muted);
+        background: #ffffff;
+        text-align: left;
+        font-size: 13px;
+        font-weight: 780;
+      }
+
+      .choice.active {
+        border-color: var(--teal);
+        color: #ffffff;
+        background: var(--teal);
+      }
+
+      .choice strong {
+        display: block;
+        color: inherit;
+      }
+
+      .choice span {
+        display: block;
+        margin-top: 2px;
+        color: inherit;
+        opacity: 0.78;
+        font-size: 12px;
+        font-weight: 650;
+        line-height: 1.35;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 0 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--ink);
+        background: #ffffff;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .btn.primary {
+        border-color: var(--teal);
+        color: #ffffff;
+        background: var(--teal);
+      }
+
+      .btn.primary:hover {
+        background: var(--teal-dark);
+      }
+
+      .btn.small {
+        min-height: 34px;
+        padding: 0 11px;
+        font-size: 13px;
+      }
+
+      .btn.full {
+        width: 100%;
+      }
+
+      .btn.ghost {
+        background: transparent;
+      }
+
+      .debug-actions {
+        display: grid;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .note {
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .note.blue {
+        color: #244f7e;
+        background: var(--blue-soft);
+      }
+
+      .note.green {
+        color: #17665d;
+        background: var(--green-soft);
+      }
+
+      .note.amber {
+        color: #71500b;
+        background: var(--amber-soft);
+      }
+
+      .status-list {
+        display: grid;
+        gap: 7px;
+        margin-top: 10px;
+      }
+
+      .status-row {
+        display: grid;
+        grid-template-columns: 76px minmax(0, 1fr);
+        gap: 8px;
+        padding: 8px;
+        border: 1px solid #d9e6ee;
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .status-row strong {
+        color: var(--blue);
+        font-size: 12px;
+      }
+
+      .status-row span {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .stage-wrap {
+        padding: 22px;
+      }
+
+      .stage-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        width: min(1120px, 100%);
+        margin: 0 auto 14px;
+      }
+
+      .stage-top h1 {
+        margin: 0 0 4px;
+        font-size: 22px;
+      }
+
+      .stage-top p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .scenario-pill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 34px;
+        padding: 0 11px;
+        border: 1px solid #c5dcd7;
+        border-radius: 999px;
+        color: var(--teal-dark);
+        background: #ffffff;
+        font-size: 13px;
+        font-weight: 850;
+        white-space: nowrap;
+      }
+
+      .stage {
+        width: min(1120px, 100%);
+        min-height: 720px;
+        margin: 0 auto;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+
+      .screen {
+        display: none;
+        min-height: 720px;
+      }
+
+      .screen.active {
+        display: block;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(340px, 430px);
+        gap: 36px;
+        align-items: center;
+        min-height: 720px;
+        padding: 42px;
+        background:
+          linear-gradient(115deg, rgba(232, 246, 242, 0.96), rgba(255, 255, 255, 0.88)),
+          #ffffff;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        margin-bottom: 16px;
+        padding: 0 10px;
+        border: 1px solid #c7e2db;
+        border-radius: 7px;
+        color: var(--teal-dark);
+        background: #ffffff;
+        font-size: 13px;
+        font-weight: 850;
+      }
+
+      .hero h2 {
+        margin: 0 0 16px;
+        max-width: 650px;
+        font-size: 46px;
+        line-height: 1.08;
+        letter-spacing: 0;
+      }
+
+      .hero p {
+        margin: 0 0 24px;
+        max-width: 600px;
+        color: var(--muted);
+        font-size: 18px;
+        line-height: 1.7;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .product-shot,
+      .auth-card,
+      .panel,
+      .modal-body,
+      .subscribe-card {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #ffffff;
+      }
+
+      .product-shot {
+        padding: 16px;
+        box-shadow: var(--shadow);
+      }
+
+      .mock-window {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: #ffffff;
+      }
+
+      .mock-top {
+        display: flex;
+        gap: 6px;
+        padding: 11px;
+        border-bottom: 1px solid var(--line);
+        background: #f8fafb;
+      }
+
+      .dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 999px;
+        background: #c4cdd5;
+      }
+
+      .mock-body {
+        display: grid;
+        grid-template-columns: 120px minmax(0, 1fr);
+        min-height: 280px;
+      }
+
+      .mock-side {
+        padding: 14px;
+        border-right: 1px solid var(--line);
+        background: #f7faf9;
+      }
+
+      .mock-main {
+        padding: 18px;
+      }
+
+      .mock-pill,
+      .mock-line,
+      .mock-title {
+        border-radius: 999px;
+        background: #dbe7e4;
+      }
+
+      .mock-pill {
+        height: 12px;
+        margin-bottom: 12px;
+      }
+
+      .mock-pill.short {
+        width: 70%;
+      }
+
+      .mock-title {
+        width: 70%;
+        height: 18px;
+        margin-bottom: 18px;
+        background: #a9d4cc;
+      }
+
+      .mock-line {
+        height: 12px;
+        margin-bottom: 10px;
+      }
+
+      .mock-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 22px;
+      }
+
+      .mock-card {
+        min-height: 74px;
+        padding: 12px;
+        border-radius: 8px;
+        background: var(--green-soft);
+      }
+
+      .auth-layout {
+        display: grid;
+        grid-template-columns: minmax(320px, 0.9fr) minmax(320px, 1fr);
+        min-height: 720px;
+      }
+
+      .auth-art {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 34px;
+        border-right: 1px solid var(--line);
+        background: var(--green-soft);
+      }
+
+      .auth-art h2 {
+        margin: 0 0 12px;
+        font-size: 34px;
+        line-height: 1.18;
+      }
+
+      .auth-art p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      .auth-panel {
+        display: grid;
+        place-items: center;
+        padding: 34px;
+      }
+
+      .auth-card {
+        width: min(440px, 100%);
+        padding: 28px;
+      }
+
+      .auth-card h2 {
+        margin: 0 0 8px;
+        font-size: 27px;
+      }
+
+      .auth-card p {
+        margin: 0 0 20px;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .provider {
+        display: grid;
+        grid-template-columns: 32px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+        width: 100%;
+        min-height: 50px;
+        margin-bottom: 10px;
+        padding: 8px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--ink);
+        background: #ffffff;
+        text-align: left;
+        font-weight: 800;
+      }
+
+      .provider-icon {
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 7px;
+        background: var(--soft);
+        font-weight: 900;
+      }
+
+      .divider {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 12px;
+        align-items: center;
+        margin: 18px 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .divider::before,
+      .divider::after {
+        height: 1px;
+        background: var(--line);
+        content: "";
+      }
+
+      .field {
+        display: grid;
+        gap: 7px;
+        margin-bottom: 12px;
+      }
+
+      .field label {
+        color: var(--ink);
+        font-size: 13px;
+        font-weight: 850;
+      }
+
+      .field input {
+        width: 100%;
+        min-height: 44px;
+        padding: 0 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        outline: 0;
+      }
+
+      .hint {
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .app-view {
+        display: grid;
+        grid-template-columns: 210px minmax(0, 1fr);
+        min-height: 720px;
+      }
+
+      .app-side {
+        display: flex;
+        flex-direction: column;
+        padding: 18px 14px;
+        border-right: 1px solid var(--line);
+        background: #f8faf9;
+      }
+
+      .app-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+        font-weight: 850;
+      }
+
+      .side-item {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        min-height: 38px;
+        margin-bottom: 6px;
+        padding: 0 10px;
+        border: 0;
+        border-radius: 8px;
+        color: var(--muted);
+        background: transparent;
+        text-align: left;
+        font-size: 14px;
+        font-weight: 780;
+      }
+
+      .side-item.active {
+        color: var(--teal-dark);
+        background: var(--green-soft);
+      }
+
+      .trial-usage {
+        display: grid;
+        gap: 4px;
+        width: 100%;
+        margin: 0 0 16px;
+        padding: 11px;
+        border: 1px solid #b9dcd4;
+        border-radius: 8px;
+        color: var(--teal-dark);
+        background: #ffffff;
+        text-align: left;
+      }
+
+      .trial-usage:hover {
+        border-color: var(--teal);
+        background: var(--green-soft);
+      }
+
+      .trial-usage.joined {
+        cursor: default;
+      }
+
+      .trial-usage:disabled {
+        opacity: 1;
+      }
+
+      .trial-usage:disabled:hover {
+        border-color: #b9dcd4;
+        background: #ffffff;
+      }
+
+      .trial-usage strong {
+        font-size: 13px;
+      }
+
+      .trial-usage span {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1.35;
+      }
+
+      .app-main {
+        padding: 24px;
+      }
+
+      .app-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 22px;
+      }
+
+      .app-head h2 {
+        margin: 0 0 6px;
+        font-size: 26px;
+      }
+
+      .app-head p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .app-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .panel {
+        min-height: 180px;
+        padding: 18px;
+      }
+
+      .upload-zone {
+        display: grid;
+        place-items: center;
+        min-height: 250px;
+        padding: 26px;
+        border: 1px dashed #a9c9c3;
+        border-radius: 10px;
+        background: #fbfdfc;
+        text-align: center;
+      }
+
+      .upload-zone.dragging {
+        border-color: var(--teal);
+        background: var(--green-soft);
+      }
+
+      .upload-icon {
+        display: grid;
+        place-items: center;
+        width: 46px;
+        height: 46px;
+        margin: 0 auto 14px;
+        border-radius: 10px;
+        color: var(--teal-dark);
+        background: var(--green-soft);
+        font-size: 28px;
+        font-weight: 900;
+      }
+
+      .upload-zone h3 {
+        margin: 0 0 8px;
+        font-size: 20px;
+      }
+
+      .upload-zone p {
+        margin: 0 0 16px;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .file-input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .selected-file {
+        display: inline-flex;
+        max-width: 100%;
+        min-height: 32px;
+        margin-top: 12px;
+        padding: 0 10px;
+        align-items: center;
+        border: 1px solid #c8dbd6;
+        border-radius: 8px;
+        color: var(--teal-dark);
+        background: #ffffff;
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .progress {
+        margin-top: 14px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: #ffffff;
+      }
+
+      .progress strong {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .track {
+        height: 8px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: var(--soft);
+      }
+
+      .bar {
+        width: 0;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--teal);
+        transition: width 0.35s ease;
+      }
+
+      .progress p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .result-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .result-item {
+        min-height: 132px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: #fbfdff;
+      }
+
+      .result-item h3 {
+        margin: 0 0 8px;
+      }
+
+      .result-item p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .subscribe-screen {
+        display: grid;
+        place-items: center;
+        min-height: 720px;
+        padding: 36px;
+        background: #fbfcfd;
+      }
+
+      .subscribe-card {
+        width: min(720px, 100%);
+        padding: 28px;
+      }
+
+      .subscribe-card h2 {
+        margin: 0 0 10px;
+        font-size: 30px;
+      }
+
+      .subscribe-card p {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 40;
+        display: none;
+        place-items: center;
+        padding: 20px;
+        background: rgba(20, 32, 43, 0.48);
+      }
+
+      .modal-backdrop.show {
+        display: grid;
+      }
+
+      .modal-body {
+        width: min(560px, 100%);
+        padding: 24px;
+        box-shadow: var(--shadow);
+      }
+
+      .modal-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 12px;
+      }
+
+      .modal-head h2 {
+        margin: 0;
+        font-size: 25px;
+      }
+
+      .close {
+        width: 36px;
+        height: 36px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        font-size: 20px;
+      }
+
+      .modal-body p {
+        margin: 0 0 14px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .qr-panel {
+        display: grid;
+        grid-template-columns: 110px minmax(0, 1fr);
+        gap: 15px;
+        align-items: center;
+        margin: 14px 0 18px;
+        padding: 14px;
+        border: 1px solid #efcc83;
+        border-radius: 9px;
+        background: var(--amber-soft);
+      }
+
+      .qr {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 5px;
+        width: 110px;
+        height: 110px;
+        padding: 10px;
+        border: 1px solid #e0bf73;
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .qr span {
+        border-radius: 2px;
+        background: var(--ink);
+      }
+
+      .qr span:nth-child(2n) {
+        background: transparent;
+      }
+
+      .qr span:nth-child(5n),
+      .qr span:nth-child(7),
+      .qr span:nth-child(13),
+      .qr span:nth-child(19) {
+        background: var(--teal);
+      }
+
+      .toast {
+        position: fixed;
+        right: 22px;
+        bottom: 22px;
+        z-index: 60;
+        transform: translateY(18px);
+        opacity: 0;
+        pointer-events: none;
+        padding: 14px 16px;
+        border: 1px solid #b9ded6;
+        border-radius: 10px;
+        color: var(--teal-dark);
+        background: #ffffff;
+        box-shadow: var(--shadow);
+        font-weight: 850;
+        transition:
+          opacity 0.2s ease,
+          transform 0.2s ease;
+      }
+
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      @media (max-width: 980px) {
+        .shell {
+          grid-template-columns: 1fr;
+        }
+
+        .control {
+          position: static;
+          height: auto;
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .stage-wrap {
+          padding: 14px;
+        }
+
+        .hero,
+        .auth-layout,
+        .app-view,
+        .app-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .auth-art,
+        .app-side {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .screen,
+        .stage,
+        .hero,
+        .auth-layout,
+        .app-view {
+          min-height: auto;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .stage-top,
+        .app-head,
+        .qr-panel {
+          align-items: flex-start;
+          flex-direction: column;
+          grid-template-columns: 1fr;
+        }
+
+        .choice-grid.two,
+        .result-grid,
+        .mock-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          padding: 26px;
+        }
+
+        .hero h2 {
+          font-size: 34px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="control" aria-label="演示控制台">
+        <div class="brand">
+          <span class="logo">C</span>
+          <span>Capsu.ai Demo</span>
+        </div>
+
+        <section class="control-section">
+          <h2>1. 选择方案</h2>
+          <div class="choice-grid two" id="plan-choices">
+            <button class="choice active" type="button" data-plan="a">
+              <strong>方案 1</strong>
+              <span>首颗生成后邀请</span>
+            </button>
+            <button class="choice" type="button" data-plan="b">
+              <strong>方案 2</strong>
+              <span>首日不提醒</span>
+            </button>
+          </div>
+          <div class="note green" id="plan-note">
+            推荐主方案：第一颗学习胶囊生成后，用大弹窗告知延长试用权益。
+          </div>
+        </section>
+
+        <section class="control-section">
+          <h2>2. 选择体验阶段</h2>
+          <div class="choice-grid" id="day-choices">
+            <button class="choice active" type="button" data-day="day1">
+              <strong>新人首次使用</strong>
+              <span>从官网免费试用开始，走注册到上传</span>
+            </button>
+            <button class="choice" type="button" data-day="day3">
+              <strong>试用第 3 天</strong>
+              <span>选择资料生成时，出现延长试用大提醒</span>
+            </button>
+            <button class="choice" type="button" data-day="day14">
+              <strong>延长试用第 14 天</strong>
+              <span>选择资料生成时，出现订阅大提醒</span>
+            </button>
+          </div>
+
+          <div class="debug-actions">
+            <button class="btn primary full" type="button" id="replay-scenario">清空并重开当前阶段</button>
+          </div>
+          <div class="note blue">每次切换或重新开始，都会清空上一次的上传、结果和弹窗，并从所选阶段的起点进入。</div>
+        </section>
+
+        <section class="control-section">
+          <h2>当前交互规则</h2>
+          <div class="status-list">
+            <div class="status-row">
+              <strong>注册</strong>
+              <span>Google / 邮箱优先；不在首屏放手机号，不要求微信。</span>
+            </div>
+            <div class="status-row">
+              <strong>上传</strong>
+              <span id="upload-rule">上传、解析、生成结果完成后才出现延长试用弹窗。</span>
+            </div>
+            <div class="status-row">
+              <strong>微信</strong>
+              <span id="wechat-rule">第 3 天尝试生成资料时，以大弹窗邀请加入反馈群，延长试用。</span>
+            </div>
+            <div class="status-row">
+              <strong>订阅</strong>
+              <span>第 14 天尝试生成资料时，以大弹窗承接订阅方案。</span>
+            </div>
+            <div class="status-row">
+              <strong>稍后</strong>
+              <span>点“稍后”只收起当前提示；用户仍可从产品左侧的试用用量入口随时进入。</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="control-section">
+          <h2>演示备注</h2>
+          <p>左侧是评审和调试区，右侧只显示用户真实会看到的页面。会议时选择方案和体验阶段后，右侧会从这个阶段的起点完整开始。</p>
+          <div class="note amber">订阅价格、生成额度、权益细则仍是后续需求，不在本稿内定死。</div>
+        </section>
+      </aside>
+
+      <main class="stage-wrap">
+        <div class="stage-top">
+          <div>
+            <h1>注册与试用流程场景模拟</h1>
+            <p>每次选择场景都会自动重置；右侧从所选阶段的起点完整体验。</p>
+          </div>
+          <span class="scenario-pill" id="scenario-pill">方案 1 · 新人首次使用</span>
+        </div>
+
+        <section class="stage" aria-live="polite">
+          <div class="screen active" id="screen-home">
+            <div class="hero">
+              <div>
+                <span class="eyebrow">面向海外高校学习者的 AI 学习工作台</span>
+                <h2>把课程资料变成可追溯的学习笔记</h2>
+                <p>上传 PDF、文档或录音，Capsu 会帮你整理学习概要、术语表和闪卡。现在无需等待邀请，注册后即可开始试用。</p>
+                <div class="actions">
+                  <button class="btn primary" type="button" id="home-cta">免费试用</button>
+                  <button class="btn" type="button" id="home-login">已有账号登录</button>
+                </div>
+              </div>
+              <div class="product-shot" aria-label="产品界面预览">
+                <div class="mock-window">
+                  <div class="mock-top">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                  </div>
+                  <div class="mock-body">
+                    <div class="mock-side">
+                      <div class="mock-pill"></div>
+                      <div class="mock-pill short"></div>
+                      <div class="mock-pill"></div>
+                      <div class="mock-pill short"></div>
+                    </div>
+                    <div class="mock-main">
+                      <div class="mock-title"></div>
+                      <div class="mock-line"></div>
+                      <div class="mock-line"></div>
+                      <div class="mock-line"></div>
+                      <div class="mock-grid">
+                        <div class="mock-card"></div>
+                        <div class="mock-card"></div>
+                        <div class="mock-card"></div>
+                        <div class="mock-card"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="screen" id="screen-auth">
+            <div class="auth-layout">
+              <div class="auth-art">
+                <div>
+                  <span class="eyebrow">免费试用</span>
+                  <h2>注册后，马上处理第一份课程资料</h2>
+                  <p>先体验 3 天 Capsu Pro。我们优先使用 Google / 邮箱注册，手机号和微信都不作为第一步门槛。</p>
+                </div>
+                <div class="mock-window">
+                  <div class="mock-top">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                  </div>
+                  <div class="mock-main">
+                    <div class="mock-title"></div>
+                    <div class="mock-line"></div>
+                    <div class="mock-line"></div>
+                    <div class="mock-line"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="auth-panel">
+                <form class="auth-card" id="auth-form" novalidate>
+                  <h2>免费试用 Capsu</h2>
+                  <p>无需等待邀请，注册后即可开始处理第一份课程资料。</p>
+                  <button class="provider" type="button" id="google-login">
+                    <span class="provider-icon">G</span>
+                    <span>使用 Google 继续</span>
+                  </button>
+                  <div class="divider">或使用邮箱</div>
+                  <div class="field">
+                    <label for="email">邮箱</label>
+                    <input id="email" type="email" placeholder="name@university.edu" autocomplete="email" />
+                  </div>
+                  <div class="field">
+                    <label for="code">验证码</label>
+                    <input id="code" type="text" inputmode="numeric" placeholder="输入 6 位验证码" />
+                  </div>
+                  <button class="btn primary full" type="submit">继续</button>
+                  <div class="hint">演示可直接点 Google，或输入任意邮箱继续。</div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="screen" id="screen-app">
+            <div class="app-view">
+              <aside class="app-side">
+                <div class="app-brand">
+                  <span class="logo">C</span>
+                  <span>Capsu</span>
+                </div>
+                <button class="trial-usage" type="button" id="trial-usage">
+                  <strong id="trial-usage-title">Pro 试用 · 还剩 3 天</strong>
+                  <span id="trial-usage-action">加入反馈群，延长至 14 天</span>
+                </button>
+                <button class="side-item active" type="button">我的笔记</button>
+                <button class="side-item" type="button">添加资料</button>
+                <button class="side-item" type="button">闪卡</button>
+                <button class="side-item" type="button">设置</button>
+              </aside>
+
+              <div class="app-main">
+                <div class="app-head">
+                  <div>
+                    <h2 id="app-title">创建第一篇学习笔记</h2>
+                    <p id="app-subtitle">先上传一份课程资料，马上看到概要、术语和复习工具。</p>
+                  </div>
+                </div>
+
+                <div class="app-grid">
+                  <section class="panel">
+                    <div class="upload-zone" id="upload-zone">
+                      <div>
+                        <input class="file-input" id="test-file" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.mp3,.m4a,.wav" />
+                        <div class="upload-icon">↑</div>
+                        <h3>拖入课程资料，或选择文件</h3>
+                        <p>支持 PDF、文档和常见音频。生成结果会保存在这篇学习笔记里。</p>
+                        <div class="actions">
+                          <label class="btn primary" for="test-file">选择测试文档</label>
+                          <button class="btn" type="button" id="sample-upload">使用示例文档生成</button>
+                        </div>
+                        <span class="selected-file hidden" id="selected-file"></span>
+                      </div>
+                    </div>
+
+                    <div class="progress hidden" id="progress">
+                      <strong id="progress-title">正在上传资料</strong>
+                      <div class="track">
+                        <div class="bar" id="progress-bar"></div>
+                      </div>
+                      <p id="progress-copy">正在读取文件内容...</p>
+                    </div>
+
+                    <div class="result-grid hidden" id="result-grid">
+                      <div class="result-item">
+                        <h3>学习概要</h3>
+                        <p id="summary-copy">把课堂资料整理成按主题分组的摘要，保留来源引用。</p>
+                      </div>
+                      <div class="result-item">
+                        <h3>术语表</h3>
+                        <p>自动提取关键词和定义，帮助非母语学习者快速补背景。</p>
+                      </div>
+                      <div class="result-item">
+                        <h3>闪卡</h3>
+                        <p>从资料内容生成可复习的问题卡片，后续可继续编辑。</p>
+                      </div>
+                    </div>
+                  </section>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="screen" id="screen-subscribe">
+            <div class="subscribe-screen">
+              <div class="subscribe-card">
+                <span class="eyebrow">试用结束</span>
+                <h2>继续使用 Capsu Pro</h2>
+                <p>这里承接后续订阅计划。具体价格、生成额度、上传文件限制和权益，需要在订阅需求里单独评审。</p>
+                <div class="actions">
+                  <button class="btn primary" type="button" id="subscribe-plan">选择 Pro 方案</button>
+                  <button class="btn" type="button" id="back-app">返回我的笔记</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal-backdrop" id="wechat-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-body">
+        <div class="modal-head">
+          <h2 id="modal-title">把试用延长到 14 天</h2>
+          <button class="close" type="button" id="close-modal" aria-label="关闭">×</button>
+        </div>
+        <p id="modal-copy">加入反馈群后，我们会把 Pro 试用从 3 天延长到 14 天，并邀请你反馈真实学习体验。</p>
+        <div class="qr-panel" id="qr-panel">
+          <div class="qr" aria-label="微信群二维码">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div>
+            <strong id="qr-title">Capsu 反馈群</strong>
+            <p id="qr-copy">扫码加入反馈群；如果已经加入，点击下方按钮延长试用。</p>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" type="button" id="modal-primary">已加入，延长试用</button>
+          <button class="btn" type="button" id="modal-later">稍后再说</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast">已生成学习概要</div>
+
+    <script>
+      const state = {
+        plan: "a",
+        day: "day1",
+        screen: "home",
+        uploaded: false,
+        uploading: false,
+        joinedWechat: false,
+        modalMode: "",
+        selectedFileName: "",
+      };
+
+      const copy = {
+        a: {
+          planNote: "推荐主方案：新人完成第一颗学习胶囊后，立刻用大弹窗告知延长权益；第 3 天未加群用户尝试生成时再次提醒。",
+          uploadRule: "新人首次生成完成后，直接出现延长试用大弹窗。",
+          wechatRule: "第 3 天尝试生成资料时，显示大弹窗邀请加入反馈群。",
+        },
+        b: {
+          planNote: "对照方案：新人首日完全不出现微信；第 3 天尝试生成资料时才用大弹窗邀请延长试用。",
+          uploadRule: "新人首次生成后只展示学习结果，不出现微信提示。",
+          wechatRule: "第 3 天尝试生成资料时，显示大弹窗邀请加入反馈群。",
+        },
+      };
+
+      const screens = document.querySelectorAll(".screen");
+      const modal = document.getElementById("wechat-modal");
+      const toast = document.getElementById("toast");
+      const fileInput = document.getElementById("test-file");
+      const selectedFile = document.getElementById("selected-file");
+      const progress = document.getElementById("progress");
+      const progressBar = document.getElementById("progress-bar");
+      const progressTitle = document.getElementById("progress-title");
+      const progressCopy = document.getElementById("progress-copy");
+      const resultGrid = document.getElementById("result-grid");
+      let timers = [];
+
+      function setScreen(screen) {
+        state.screen = screen;
+        screens.forEach((node) => node.classList.toggle("active", node.id === `screen-${screen}`));
+      }
+
+      function clearTimers() {
+        timers.forEach((timer) => window.clearTimeout(timer));
+        timers = [];
+      }
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add("show");
+        window.setTimeout(() => toast.classList.remove("show"), 1800);
+      }
+
+      function dayLabel() {
+        if (state.day === "day3") return "试用第 3 天";
+        if (state.day === "day14") return "延长试用第 14 天";
+        return "新人首次使用";
+      }
+
+      function updateScenarioText() {
+        const planLabel = state.plan === "a" ? "方案 1" : "方案 2";
+        document.getElementById("scenario-pill").textContent = `${planLabel} · ${dayLabel()}`;
+        document.getElementById("plan-note").textContent = copy[state.plan].planNote;
+        document.getElementById("upload-rule").textContent = copy[state.plan].uploadRule;
+        document.getElementById("wechat-rule").textContent = copy[state.plan].wechatRule;
+      }
+
+      function updateChoices() {
+        document.querySelectorAll("[data-plan]").forEach((button) => {
+          button.classList.toggle("active", button.dataset.plan === state.plan);
+        });
+        document.querySelectorAll("[data-day]").forEach((button) => {
+          button.classList.toggle("active", button.dataset.day === state.day);
+        });
+        updateScenarioText();
+      }
+
+      function updateTrial() {
+        const trialUsage = document.getElementById("trial-usage");
+        const title = document.getElementById("trial-usage-title");
+        const action = document.getElementById("trial-usage-action");
+
+        if (state.joinedWechat) {
+          title.textContent = `Pro 试用 · 还剩 ${state.day === "day3" ? 12 : 14} 天`;
+          action.classList.add("hidden");
+          trialUsage.disabled = true;
+          trialUsage.classList.add("joined");
+          return;
+        }
+
+        if (state.day === "day14") {
+          title.textContent = "Pro 试用已结束";
+          action.textContent = "查看订阅方案";
+        } else {
+          title.textContent = `Pro 试用 · 还剩 ${state.day === "day3" ? 1 : 3} 天`;
+          action.textContent = "加入反馈群，延长至 14 天";
+        }
+
+        action.classList.remove("hidden");
+        trialUsage.disabled = false;
+        trialUsage.classList.remove("joined");
+      }
+
+      function resetProductState() {
+        clearTimers();
+        state.uploaded = false;
+        state.uploading = false;
+        state.joinedWechat = false;
+        state.modalMode = "";
+        state.selectedFileName = "";
+        fileInput.value = "";
+        selectedFile.textContent = "";
+        selectedFile.classList.add("hidden");
+        progress.classList.add("hidden");
+        progressBar.style.width = "0";
+        resultGrid.classList.add("hidden");
+        modal.classList.remove("show");
+        toast.classList.remove("show");
+        document.getElementById("app-title").textContent =
+          state.day === "day1" ? "创建第一篇学习笔记" : "继续使用 Capsu";
+        document.getElementById("app-subtitle").textContent =
+          state.day === "day14"
+            ? "你的 14 天完整试用已结束。选择资料生成时可进入订阅方案。"
+            : state.day === "day3"
+              ? "今天是 3 天试用的最后一天。选择资料后可延长试用，再重新上传生成。"
+              : "先上传一份课程资料，马上看到概要、术语和复习工具。";
+        updateTrial();
+      }
+
+      function startScenario() {
+        resetProductState();
+        updateChoices();
+        if (state.day === "day1") {
+          setScreen("home");
+        } else {
+          setScreen("app");
+          runEntryTrigger();
+        }
+      }
+
+      function runEntryTrigger() {
+        updateTrial();
+      }
+
+      function setSelectedFile(name) {
+        state.selectedFileName = name || "Lecture 1 course notes.pdf";
+        selectedFile.textContent = `已选择：${state.selectedFileName}`;
+        selectedFile.classList.remove("hidden");
+      }
+
+      function startUpload(name) {
+        if (state.day === "day3" && !state.joinedWechat) {
+          setSelectedFile(name || "Lecture 1 course notes.pdf");
+          state.uploaded = false;
+          state.uploading = false;
+          resultGrid.classList.add("hidden");
+          progress.classList.add("hidden");
+          showModal("extend");
+          return;
+        }
+
+        if (state.day === "day14") {
+          setSelectedFile(name || "Lecture 1 course notes.pdf");
+          state.uploaded = false;
+          state.uploading = false;
+          resultGrid.classList.add("hidden");
+          progress.classList.add("hidden");
+          showModal("subscribe");
+          return;
+        }
+
+        clearTimers();
+        setSelectedFile(name || "Lecture 1 course notes.pdf");
+        state.uploaded = false;
+        state.uploading = true;
+        resultGrid.classList.add("hidden");
+        progress.classList.remove("hidden");
+        progressTitle.textContent = "正在上传资料";
+        progressCopy.textContent = "正在读取文件内容...";
+        progressBar.style.width = "18%";
+
+        timers.push(
+          window.setTimeout(() => {
+            progressTitle.textContent = "正在解析资料";
+            progressCopy.textContent = "正在提取章节、术语和可引用片段...";
+            progressBar.style.width = "48%";
+          }, 450),
+        );
+        timers.push(
+          window.setTimeout(() => {
+            progressTitle.textContent = "正在生成学习工具";
+            progressCopy.textContent = "正在生成概要、术语表和闪卡...";
+            progressBar.style.width = "78%";
+          }, 980),
+        );
+        timers.push(window.setTimeout(finishUpload, 1500));
+      }
+
+      function finishUpload() {
+        state.uploading = false;
+        state.uploaded = true;
+        progressTitle.textContent = "学习内容已生成";
+        progressCopy.textContent = "已完成概要、术语表和闪卡生成。";
+        progressBar.style.width = "100%";
+        document.getElementById("summary-copy").textContent =
+          `已根据《${state.selectedFileName}》整理主题摘要，并保留来源引用。`;
+        resultGrid.classList.remove("hidden");
+        showToast("已生成学习概要");
+        if (state.plan === "a" && state.day === "day1" && !state.joinedWechat) {
+          showModal("first-capsule");
+        }
+      }
+
+      function showModal(mode) {
+        state.modalMode = mode;
+
+        const modalTitle = document.getElementById("modal-title");
+        const modalCopy = document.getElementById("modal-copy");
+        const qrPanel = document.getElementById("qr-panel");
+        const primaryButton = document.getElementById("modal-primary");
+        const laterButton = document.getElementById("modal-later");
+
+        if (mode === "subscribe") {
+          modalTitle.textContent = "继续生成学习资料";
+          modalCopy.textContent = "试用已结束。订阅 Pro 后即可继续生成。";
+          qrPanel.classList.add("hidden");
+          primaryButton.textContent = "查看订阅方案";
+          laterButton.textContent = "稍后再说";
+        } else if (mode === "first-capsule") {
+          modalTitle.textContent = "继续生成学习资料";
+          modalCopy.textContent = "加企业微信，解锁 11 天额外试用。";
+          qrPanel.classList.remove("hidden");
+          primaryButton.textContent = "已加入，锁定至第 14 天";
+          laterButton.textContent = "稍后再说";
+        } else {
+          modalTitle.textContent = "继续生成学习资料";
+          modalCopy.textContent = "加企业微信，解锁 11 天额外试用。";
+          qrPanel.classList.remove("hidden");
+          primaryButton.textContent = "已加入，锁定至第 14 天";
+          laterButton.textContent = "稍后再说";
+        }
+
+        modal.classList.add("show");
+      }
+
+      function closeModal() {
+        modal.classList.remove("show");
+        state.modalMode = "";
+      }
+
+      function joinWechat() {
+        state.joinedWechat = true;
+        modal.classList.remove("show");
+        state.modalMode = "";
+        state.selectedFileName = "";
+        fileInput.value = "";
+        selectedFile.textContent = "";
+        selectedFile.classList.add("hidden");
+        updateTrial();
+        showToast("试用已延长，请重新选择资料开始生成");
+      }
+
+      function openSubscription() {
+        modal.classList.remove("show");
+        state.modalMode = "";
+        setScreen("subscribe");
+      }
+
+      document.querySelectorAll("[data-plan]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.plan = button.dataset.plan;
+          startScenario();
+        });
+      });
+
+      document.querySelectorAll("[data-day]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.day = button.dataset.day;
+          startScenario();
+        });
+      });
+
+      document.getElementById("replay-scenario").addEventListener("click", startScenario);
+
+      document.getElementById("home-cta").addEventListener("click", () => setScreen("auth"));
+      document.getElementById("home-login").addEventListener("click", () => {
+        resetProductState();
+        setScreen("app");
+        runEntryTrigger();
+      });
+
+      document.getElementById("google-login").addEventListener("click", () => {
+        resetProductState();
+        setScreen("app");
+        runEntryTrigger();
+      });
+
+      document.getElementById("auth-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        resetProductState();
+        setScreen("app");
+        runEntryTrigger();
+      });
+
+      fileInput.addEventListener("change", () => {
+        const file = fileInput.files && fileInput.files[0];
+        if (file) startUpload(file.name);
+      });
+
+      document.getElementById("sample-upload").addEventListener("click", () => {
+        startUpload("Lecture 1 course notes.pdf");
+      });
+
+      const uploadZone = document.getElementById("upload-zone");
+      uploadZone.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        uploadZone.classList.add("dragging");
+      });
+      uploadZone.addEventListener("dragleave", () => uploadZone.classList.remove("dragging"));
+      uploadZone.addEventListener("drop", (event) => {
+        event.preventDefault();
+        uploadZone.classList.remove("dragging");
+        const file = event.dataTransfer.files && event.dataTransfer.files[0];
+        startUpload(file ? file.name : "Lecture 1 course notes.pdf");
+      });
+
+      document.getElementById("trial-usage").addEventListener("click", () => {
+        if (state.joinedWechat) return;
+        showModal(state.day === "day14" ? "subscribe" : "extend");
+      });
+      document.getElementById("subscribe-plan").addEventListener("click", () => {
+        showToast("订阅方案与价格待单独评审");
+      });
+      document.getElementById("back-app").addEventListener("click", () => {
+        setScreen("app");
+      });
+
+      document.getElementById("close-modal").addEventListener("click", closeModal);
+      document.getElementById("modal-later").addEventListener("click", closeModal);
+      document.getElementById("modal-primary").addEventListener("click", () => {
+        if (state.modalMode === "subscribe") {
+          openSubscription();
+        } else {
+          joinWechat();
+        }
+      });
+      modal.addEventListener("click", (event) => {
+        if (event.target === modal) closeModal();
+      });
+
+      updateChoices();
+      startScenario();
+    </script>
+  </body>
+</html>
