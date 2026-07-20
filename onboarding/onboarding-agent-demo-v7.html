@@ -1,0 +1,4186 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capsu.ai - 学习工作台</title>
+    <style>
+      :root {
+        --bg: #f7f7f5;
+        --surface: #ffffff;
+        --surface-2: #f2f3ef;
+        --text: #20231f;
+        --muted: #767a73;
+        --line: #dedfd9;
+        --line-strong: #c8cac1;
+        --ink: #20231f;
+        --accent: #2e6658;
+        --accent-soft: #e8f2ee;
+        --blue: #315f95;
+        --blue-soft: #edf3fb;
+        --amber: #8c641d;
+        --amber-soft: #fbf4e5;
+        --danger: #a84f44;
+        --shadow: 0 16px 50px rgba(24, 30, 26, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-width: 0;
+        overflow-x: clip;
+        color: var(--text);
+        background: var(--bg);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      }
+
+      button,
+      input,
+      textarea,
+      select {
+        font: inherit;
+      }
+
+      button {
+        border: 0;
+        cursor: pointer;
+      }
+
+      .app {
+        display: grid;
+        grid-template-columns: 216px minmax(0, 1fr);
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        padding: 18px 12px;
+        border-right: 1px solid var(--line);
+        background: var(--surface);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        height: 40px;
+        padding: 0 9px;
+        font-size: 17px;
+        font-weight: 760;
+      }
+
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 26px;
+        height: 26px;
+        border: 1px solid #1e5548;
+        border-radius: 7px;
+        color: #fff;
+        background: var(--accent);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .sidebar-nav {
+        display: grid;
+        gap: 3px;
+        margin-top: 24px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        min-height: 38px;
+        padding: 0 10px;
+        border-radius: 6px;
+        color: #535851;
+        background: transparent;
+        text-align: left;
+        font-size: 14px;
+      }
+
+      .nav-item.active {
+        color: #1e4239;
+        background: var(--accent-soft);
+        font-weight: 700;
+      }
+
+      .nav-symbol {
+        width: 16px;
+        color: #777d75;
+        font-size: 16px;
+        text-align: center;
+      }
+
+      .nav-item.active .nav-symbol {
+        color: var(--accent);
+      }
+
+      .sidebar-section {
+        margin-top: 27px;
+      }
+
+      .sidebar-label {
+        padding: 0 10px 7px;
+        color: #8a8e87;
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: 0.06em;
+      }
+
+      .course-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 34px;
+        padding: 0 10px;
+        border-radius: 6px;
+        color: #5c615b;
+        font-size: 13px;
+      }
+
+      .course-row.selected {
+        color: #2a4039;
+        background: #f3f6f2;
+        font-weight: 650;
+      }
+
+      .course-count {
+        color: #9a9e97;
+        font-size: 12px;
+      }
+
+      .sidebar-record {
+        display: block;
+        width: 100%;
+        min-height: 34px;
+        padding: 8px 10px;
+        border-radius: 6px;
+        color: #5c615b;
+        background: transparent;
+        font-size: 13px;
+        text-align: left;
+      }
+
+      .sidebar-record:hover {
+        background: #f5f7f4;
+      }
+
+      .sidebar-record-title {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .sidebar-bottom {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-top: auto;
+        padding: 11px 10px 2px;
+        border-top: 1px solid var(--line);
+        color: #62675f;
+        font-size: 13px;
+      }
+
+      .sidebar-account-zone {
+        position: relative;
+        z-index: 8;
+        margin-top: auto;
+      }
+
+      .sidebar-reward-mount {
+        margin: 0 0 12px;
+      }
+
+      .sidebar-reward-card {
+        position: relative;
+        min-height: 122px;
+        overflow: hidden;
+        border: 1px solid #a8c6ff;
+        border-left: 5px solid #2d71ed;
+        border-radius: 12px;
+        background:
+          radial-gradient(circle at 80% 12%, rgba(255, 255, 255, 0.98), rgba(241, 246, 255, 0.96) 58%, #edf3ff 100%);
+        box-shadow: 0 8px 22px rgba(45, 113, 237, 0.1);
+      }
+
+      .sidebar-reward-copy {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        gap: 5px;
+        padding: 15px 8px 12px 58px;
+      }
+
+      .sidebar-reward-kicker {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        color: #151821;
+        font-size: 12px;
+        font-weight: 780;
+        line-height: 1.25;
+        white-space: nowrap;
+      }
+
+      .wechat-mark {
+        position: relative;
+        display: inline-block;
+        width: 14px;
+        height: 13px;
+        flex: 0 0 auto;
+      }
+
+      .wechat-mark::before,
+      .wechat-mark::after {
+        position: absolute;
+        border: 1.8px solid #272b33;
+        border-radius: 50%;
+        content: "";
+      }
+
+      .wechat-mark::before {
+        top: 0;
+        left: 0;
+        width: 8px;
+        height: 7px;
+      }
+
+      .wechat-mark::after {
+        right: 0;
+        bottom: 0;
+        width: 8px;
+        height: 7px;
+        background: rgba(255, 255, 255, 0.72);
+      }
+
+      .sidebar-reward-subtitle {
+        color: #727981;
+        font-size: 12px;
+        font-weight: 620;
+      }
+
+      .sidebar-reward-action {
+        justify-self: end;
+        margin-top: 8px;
+        padding: 0;
+        color: #276de9;
+        background: transparent;
+        font-size: 12px;
+        font-weight: 760;
+        line-height: 1.2;
+        white-space: nowrap;
+      }
+
+      .sidebar-reward-action:hover {
+        color: #0b53c8;
+      }
+
+      .sidebar-reward-mascot {
+        position: absolute;
+        left: -4px;
+        bottom: -37px;
+        width: 80px;
+        height: 108px;
+        background-image: url("assets/capsu-mascot-reference.png");
+        background-repeat: no-repeat;
+        background-position: -2px -49px;
+        background-size: 274px 274px;
+        pointer-events: none;
+      }
+
+      .sidebar-bottom {
+        width: 100%;
+        margin-top: 0;
+        padding: 10px 8px;
+        border-top: 1px solid var(--line);
+        border-radius: 8px;
+        color: #4c5158;
+        background: transparent;
+        text-align: left;
+      }
+
+      .sidebar-bottom:hover,
+      .sidebar-bottom[aria-expanded="true"] {
+        background: #f2f6ff;
+      }
+
+      .account-details {
+        display: grid;
+        min-width: 0;
+        gap: 2px;
+      }
+
+      .account-name {
+        color: #242831;
+        font-weight: 720;
+      }
+
+      .account-plan {
+        color: #848991;
+        font-size: 11px;
+      }
+
+      .account-chevron {
+        margin-left: auto;
+        color: #737981;
+        font-size: 18px;
+        transition: transform 180ms ease;
+      }
+
+      .sidebar-bottom[aria-expanded="true"] .account-chevron {
+        transform: rotate(180deg);
+      }
+
+      .account-menu {
+        position: absolute;
+        right: 0;
+        bottom: 58px;
+        left: 0;
+        display: none;
+        overflow: hidden;
+        border: 1px solid #d8dde5;
+        border-radius: 14px;
+        background: #fff;
+        box-shadow: 0 18px 40px rgba(27, 37, 54, 0.18);
+      }
+
+      .account-menu.visible {
+        display: block;
+      }
+
+      .account-menu .sidebar-reward-mount {
+        margin: 12px 12px 14px;
+      }
+
+      .account-menu-profile {
+        padding: 0 16px 16px;
+      }
+
+      .account-menu-name {
+        color: #242831;
+        font-size: 17px;
+        font-weight: 760;
+      }
+
+      .account-menu-email {
+        margin-top: 4px;
+        color: #737981;
+        font-size: 12px;
+      }
+
+      .account-menu-section {
+        padding: 8px;
+        border-top: 1px solid #e8eaee;
+      }
+
+      .account-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        width: 100%;
+        min-height: 36px;
+        padding: 0 8px;
+        border-radius: 7px;
+        color: #353a43;
+        background: transparent;
+        text-align: left;
+        font-size: 13px;
+      }
+
+      .account-menu-item:hover {
+        background: #f3f6fb;
+      }
+
+      .account-menu-icon {
+        width: 17px;
+        color: #707780;
+        font-size: 16px;
+        text-align: center;
+      }
+
+      .recording-quota {
+        display: grid;
+        gap: 7px;
+        padding: 10px 8px 12px;
+        border-top: 1px solid #e8eaee;
+      }
+
+      .recording-quota-label {
+        color: #656b74;
+        font-size: 12px;
+      }
+
+      .recording-quota-track {
+        height: 5px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: #e8ebf0;
+      }
+
+      .recording-quota-value {
+        width: 2%;
+        height: 100%;
+        border-radius: inherit;
+        background: #2d71ed;
+      }
+
+      .account-menu-item.logout {
+        color: #e64b43;
+      }
+
+      .avatar {
+        display: grid;
+        place-items: center;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        color: #fff;
+        background: #64766d;
+        font-size: 11px;
+        font-weight: 760;
+      }
+
+      .home {
+        min-width: 0;
+        padding: 30px 46px 44px;
+      }
+
+      .course-space {
+        display: none;
+        min-width: 0;
+        padding: 30px 46px 52px;
+      }
+
+      .course-space.visible {
+        display: block;
+      }
+
+      .course-shell {
+        max-width: 1040px;
+        margin: 0 auto;
+      }
+
+      .course-space-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 17px 0 25px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .course-space-head h1 {
+        margin-top: 4px;
+        font-size: 28px;
+      }
+
+      .course-space-subtitle {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .course-head-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .course-overview {
+        display: grid;
+        gap: 22px;
+        padding-top: 25px;
+      }
+
+      .course-summary {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        border: 1px solid var(--line);
+        background: var(--surface);
+      }
+
+      .course-summary-item {
+        padding: 15px 17px;
+        border-right: 1px solid var(--line);
+      }
+
+      .course-summary-item:last-child {
+        border-right: 0;
+      }
+
+      .course-summary-value {
+        color: #284d42;
+        font-size: 22px;
+        font-weight: 760;
+      }
+
+      .course-summary-label {
+        margin-top: 3px;
+        color: #858b83;
+        font-size: 12px;
+      }
+
+      .course-branch {
+        padding-left: 18px;
+        border-left: 2px solid #d8e2dc;
+      }
+
+      .course-branch-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 0 0 10px;
+      }
+
+      .course-branch-title {
+        color: #37433d;
+        font-size: 15px;
+        font-weight: 760;
+      }
+
+      .course-branch-note {
+        margin: 4px 0 0;
+        color: #858b83;
+        font-size: 12px;
+      }
+
+      .course-branch-count {
+        flex: 0 0 auto;
+        color: #7d847c;
+        font-size: 12px;
+      }
+
+      .course-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .course-list-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        min-height: 66px;
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: var(--surface);
+      }
+
+      button.course-list-item {
+        width: 100%;
+        cursor: pointer;
+        text-align: left;
+      }
+
+      .course-list-item:hover {
+        border-color: #a9beb4;
+      }
+
+      .course-list-leading {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+        gap: 11px;
+      }
+
+      .course-file-icon {
+        display: grid;
+        place-items: center;
+        width: 31px;
+        height: 31px;
+        flex: 0 0 auto;
+        border: 1px solid #d2ddd7;
+        border-radius: 6px;
+        color: #477266;
+        background: #f3f8f5;
+        font-size: 14px;
+      }
+
+      .course-item-name {
+        overflow: hidden;
+        color: #3f463f;
+        font-size: 14px;
+        font-weight: 680;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .course-item-meta {
+        margin-top: 3px;
+        color: #898f87;
+        font-size: 12px;
+      }
+
+      .course-item-trailing {
+        flex: 0 0 auto;
+        color: #878c85;
+        font-size: 12px;
+      }
+
+      .course-item-open {
+        color: #477267;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .course-empty {
+        padding: 42px 0;
+        color: #858b83;
+        font-size: 14px;
+        text-align: center;
+      }
+
+      .small-outline {
+        min-height: 34px;
+        padding: 0 10px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        color: #4e554e;
+        background: var(--surface);
+        font-size: 13px;
+        font-weight: 650;
+      }
+
+      .course-row {
+        width: 100%;
+        cursor: pointer;
+        border: 0;
+        text-align: left;
+      }
+
+      .home-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 1040px;
+        margin: 0 auto;
+      }
+
+      .eyebrow {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .header-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 34px;
+        padding: 0 10px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        color: #50554e;
+        background: var(--surface);
+        font-size: 13px;
+      }
+
+      .hero {
+        max-width: 860px;
+        margin: 70px auto 0;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 34px;
+        font-weight: 730;
+        letter-spacing: 0;
+        line-height: 1.24;
+      }
+
+      .hero-copy {
+        margin: 12px 0 29px;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.65;
+      }
+
+      .scene-tabs {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 17px;
+      }
+
+      .scene-tab {
+        min-height: 34px;
+        padding: 0 13px;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        color: #666b64;
+        background: transparent;
+        font-size: 14px;
+      }
+
+      .scene-tab.active {
+        border-color: #b8d1c8;
+        color: #245246;
+        background: var(--accent-soft);
+        font-weight: 700;
+      }
+
+      .composer {
+        overflow: hidden;
+        border: 1px solid var(--line-strong);
+        border-radius: 8px;
+        background: var(--surface);
+        box-shadow: 0 7px 18px rgba(29, 36, 31, 0.05);
+      }
+
+      .composer:focus-within {
+        border-color: #7a9f92;
+        box-shadow: 0 0 0 3px rgba(46, 102, 88, 0.1);
+      }
+
+      .prompt-wrap {
+        position: relative;
+        min-height: 129px;
+      }
+
+      .prompt {
+        display: block;
+        width: 100%;
+        min-height: 129px;
+        padding: 20px 21px;
+        border: 0;
+        outline: 0;
+        resize: vertical;
+        color: var(--text);
+        background: transparent;
+        font-size: 16px;
+        line-height: 1.55;
+      }
+
+      .prompt::placeholder {
+        color: #9a9e97;
+      }
+
+      .context-row {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        min-height: 58px;
+        padding: 9px 10px;
+        border-top: 1px solid var(--line);
+        background: #fcfcfb;
+      }
+
+      .context-action,
+      .course-select,
+      .send-button,
+      .tag,
+      .task-card,
+      .mini-tool,
+      .text-button {
+        border-radius: 6px;
+      }
+
+      .context-action,
+      .course-select {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        min-height: 34px;
+        padding: 0 10px;
+        border: 1px solid var(--line);
+        color: #4e544d;
+        background: #fff;
+        font-size: 13px;
+      }
+
+      .context-action:hover,
+      .course-select:hover {
+        border-color: #b7bdb4;
+        background: #f8f9f7;
+      }
+
+      .context-action b {
+        color: #4e7568;
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 1;
+      }
+
+      .course-select {
+        margin-left: auto;
+      }
+
+      .course-select strong {
+        max-width: 138px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: 600;
+      }
+
+      .send-button {
+        display: grid;
+        place-items: center;
+        width: 35px;
+        min-width: 35px;
+        height: 35px;
+        margin-left: 2px;
+        color: #fff;
+        background: var(--accent);
+        font-size: 18px;
+        font-weight: 800;
+      }
+
+      .send-button:disabled {
+        cursor: default;
+        background: #bfc9c3;
+      }
+
+      .context-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        padding: 10px 12px 0;
+      }
+
+      .context-tags:empty {
+        display: none;
+      }
+
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        min-height: 28px;
+        max-width: 280px;
+        padding: 0 8px;
+        border: 1px solid #bcd7ce;
+        color: #326155;
+        background: #f1f8f4;
+        font-size: 12px;
+      }
+
+      .tag .remove-tag {
+        padding: 0;
+        color: #587a70;
+        background: transparent;
+        line-height: 1;
+      }
+
+      .suggestions {
+        margin-top: 22px;
+      }
+
+      .suggestion-label {
+        margin-bottom: 10px;
+        color: #7d827b;
+        font-size: 13px;
+      }
+
+      .task-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .task-card {
+        min-height: 92px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        color: #383d37;
+        background: var(--surface);
+        text-align: left;
+      }
+
+      .task-card:hover,
+      .task-card.selected {
+        border-color: #84aa9d;
+        background: #fbfdfb;
+      }
+
+      .task-card.selected {
+        box-shadow: inset 0 0 0 1px #84aa9d;
+      }
+
+      .task-card-title {
+        display: block;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .task-card-copy {
+        display: block;
+        margin-top: 7px;
+        color: #858a83;
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .recent {
+        max-width: 860px;
+        margin: 64px auto 0;
+      }
+
+      .section-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+
+      .section-heading h2 {
+        margin: 0;
+        font-size: 15px;
+      }
+
+      .section-heading button {
+        color: #6a7169;
+        background: transparent;
+        font-size: 13px;
+      }
+
+      .empty-recent {
+        display: flex;
+        align-items: center;
+        min-height: 72px;
+        padding: 15px;
+        border-top: 1px solid var(--line);
+        color: #979c95;
+        font-size: 14px;
+      }
+
+      .workspace {
+        display: none;
+        grid-template-columns: 268px minmax(400px, 1fr) 350px;
+        min-height: 100vh;
+      }
+
+      .workspace.visible {
+        display: grid;
+      }
+
+      .panel {
+        min-width: 0;
+        border-right: 1px solid var(--line);
+        background: var(--surface);
+      }
+
+      .panel:last-child {
+        border-right: 0;
+      }
+
+      .workspace-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 62px;
+        padding: 0 18px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .workspace-title {
+        min-width: 0;
+        font-size: 14px;
+        font-weight: 720;
+      }
+
+      .workspace-title small {
+        display: block;
+        margin-top: 3px;
+        overflow: hidden;
+        color: #858a83;
+        font-size: 11px;
+        font-weight: 500;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .icon-button {
+        display: grid;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 5px;
+        color: #5a6059;
+        background: transparent;
+        font-size: 18px;
+      }
+
+      .icon-button:hover {
+        background: var(--surface-2);
+      }
+
+      .source-list {
+        padding: 12px;
+      }
+
+      .source-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        padding: 11px 9px;
+        border-bottom: 1px solid #ecece8;
+      }
+
+      .source-icon {
+        display: grid;
+        place-items: center;
+        width: 25px;
+        height: 25px;
+        border-radius: 5px;
+        color: #4e7568;
+        background: var(--accent-soft);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .source-content {
+        min-width: 0;
+      }
+
+      .source-name {
+        overflow: hidden;
+        color: #3e443d;
+        font-size: 13px;
+        font-weight: 650;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .source-meta {
+        margin-top: 4px;
+        color: #91968e;
+        font-size: 11px;
+      }
+
+      .source-add {
+        width: calc(100% - 24px);
+        min-height: 35px;
+        margin: 10px 12px 0;
+        border: 1px dashed #bbc3bb;
+        border-radius: 6px;
+        color: #647069;
+        background: #fafbf9;
+        font-size: 13px;
+      }
+
+      .agent {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        background: #fbfbfa;
+      }
+
+      .agent-top {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        height: 62px;
+        padding: 0 22px;
+        border-bottom: 1px solid var(--line);
+        background: var(--surface);
+      }
+
+      .agent-title {
+        color: #444a43;
+        font-size: 14px;
+        font-weight: 720;
+      }
+
+      .agent-status {
+        padding: 3px 7px;
+        border-radius: 4px;
+        color: #4b7669;
+        background: var(--accent-soft);
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .finish-recording {
+        min-height: 29px;
+        margin-left: auto;
+        padding: 0 9px;
+        border: 1px solid #d7b56d;
+        border-radius: 5px;
+        color: #755216;
+        background: #fffaf0;
+        font-size: 12px;
+        font-weight: 680;
+      }
+
+      .conversation {
+        flex: 1;
+        overflow-y: auto;
+        width: min(720px, calc(100% - 48px));
+        margin: 0 auto;
+        padding: 34px 0 27px;
+      }
+
+      .message {
+        margin-bottom: 22px;
+      }
+
+      .message-label {
+        margin-bottom: 7px;
+        color: #7c827a;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .user-message {
+        margin-left: auto;
+        padding: 13px 15px;
+        border: 1px solid #c7dbd3;
+        border-radius: 8px;
+        color: #26473d;
+        background: #f0f8f4;
+        line-height: 1.55;
+      }
+
+      .agent-message {
+        color: #363b35;
+        font-size: 14px;
+        line-height: 1.75;
+      }
+
+      .progress-row {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin: 12px 0;
+        color: #5f6b64;
+        font-size: 13px;
+      }
+
+      .spinner {
+        width: 14px;
+        height: 14px;
+        border: 2px solid #c8d9d1;
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.9s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .agent-composer {
+        width: min(720px, calc(100% - 48px));
+        margin: 0 auto 22px;
+        border: 1px solid var(--line-strong);
+        border-radius: 7px;
+        background: #fff;
+      }
+
+      .agent-composer textarea {
+        display: block;
+        width: 100%;
+        height: 51px;
+        padding: 14px;
+        border: 0;
+        outline: 0;
+        resize: none;
+        font-size: 13px;
+      }
+
+      .agent-composer-footer {
+        display: flex;
+        justify-content: flex-end;
+        padding: 0 8px 8px;
+      }
+
+      .small-send {
+        min-height: 28px;
+        padding: 0 10px;
+        border-radius: 5px;
+        color: #fff;
+        background: var(--accent);
+        font-size: 12px;
+      }
+
+      .studio {
+        background: var(--surface);
+      }
+
+      .studio-tools {
+        display: flex;
+        gap: 6px;
+        padding: 12px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .mini-tool {
+        min-height: 31px;
+        padding: 0 8px;
+        border: 1px solid var(--line);
+        color: #5d635c;
+        background: #fff;
+        font-size: 12px;
+      }
+
+      .mini-tool:hover {
+        border-color: #a5b4ad;
+        color: #326155;
+      }
+
+      .studio-content {
+        padding: 17px;
+      }
+
+      .artifact {
+        padding: 15px;
+        border: 1px solid #d4d9d3;
+        border-radius: 7px;
+        background: #fff;
+      }
+
+      .artifact-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 17px;
+      }
+
+      .artifact-kicker {
+        margin-bottom: 4px;
+        color: #80867e;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .artifact h2 {
+        margin: 0;
+        font-size: 17px;
+        line-height: 1.3;
+      }
+
+      .text-button {
+        min-height: 29px;
+        padding: 0 8px;
+        color: #477267;
+        background: transparent;
+        font-size: 12px;
+      }
+
+      .text-button:hover {
+        background: var(--accent-soft);
+      }
+
+      .artifact-section {
+        padding: 13px 0;
+        border-top: 1px solid #e8e9e5;
+      }
+
+      .artifact-section h3 {
+        margin: 0 0 8px;
+        color: #454b44;
+        font-size: 13px;
+      }
+
+      .artifact-section p,
+      .artifact-section li {
+        color: #5e645d;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .artifact-section p {
+        margin: 0;
+      }
+
+      .artifact-section ul {
+        margin: 0;
+        padding-left: 18px;
+      }
+
+      .generated-list {
+        display: grid;
+        gap: 8px;
+        margin-top: 13px;
+      }
+
+      .generated-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 40px;
+        padding: 0 10px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        color: #4c534b;
+        background: #fbfcfa;
+        font-size: 12px;
+      }
+
+      .generated-item span:last-child {
+        color: #8a9087;
+      }
+
+      button.generated-item {
+        width: 100%;
+        cursor: pointer;
+        text-align: left;
+      }
+
+      button.generated-item:hover {
+        border-color: #a6bbb1;
+        background: #f5faf7;
+      }
+
+      .modal-layer {
+        position: fixed;
+        z-index: 30;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: rgba(24, 29, 26, 0.32);
+      }
+
+      .modal-layer.visible {
+        display: flex;
+      }
+
+      .modal {
+        width: min(560px, 100%);
+        max-height: min(720px, calc(100vh - 48px));
+        overflow-y: auto;
+        border: 1px solid #d0d4ce;
+        border-radius: 9px;
+        background: #fff;
+        box-shadow: var(--shadow);
+      }
+
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .modal-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .modal-title {
+        font-size: 16px;
+        font-weight: 740;
+      }
+
+      .modal-body {
+        padding: 20px;
+      }
+
+      .modal-copy {
+        margin: 0 0 16px;
+        color: #737970;
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .upload-zone {
+        display: grid;
+        place-items: center;
+        min-height: 140px;
+        padding: 20px;
+        border: 1px dashed #aeb8b0;
+        border-radius: 7px;
+        color: #637068;
+        background: #fbfcfa;
+        text-align: center;
+      }
+
+      .upload-zone strong {
+        display: block;
+        color: #455047;
+        font-size: 14px;
+      }
+
+      .upload-zone span {
+        display: block;
+        margin-top: 6px;
+        color: #858b83;
+        font-size: 12px;
+      }
+
+      .file-pick {
+        display: inline-flex;
+        align-items: center;
+        min-height: 32px;
+        margin-top: 12px;
+        padding: 0 10px;
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        color: #4c554d;
+        background: #fff;
+        font-size: 13px;
+      }
+
+      .file-pick input {
+        display: none;
+      }
+
+      .modal-section-title {
+        margin: 22px 0 9px;
+        color: #777d75;
+        font-size: 12px;
+        font-weight: 750;
+      }
+
+      .choice-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .content-course-group {
+        display: grid;
+        gap: 8px;
+        padding: 12px 0 3px;
+        border-top: 1px solid #e4e6e1;
+      }
+
+      .content-course-group:first-child {
+        padding-top: 0;
+        border-top: 0;
+      }
+
+      .content-course-title {
+        color: #39584d;
+        font-size: 13px;
+        font-weight: 760;
+      }
+
+      .content-type-label {
+        margin-top: 4px;
+        color: #858b83;
+        font-size: 11px;
+        font-weight: 720;
+      }
+
+      .choice-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        min-height: 46px;
+        padding: 0 12px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        color: #4a5049;
+        background: #fff;
+        text-align: left;
+      }
+
+      .choice-item:hover,
+      .choice-item.checked {
+        border-color: #8aada0;
+        background: #f7fbf8;
+      }
+
+      .choice-item .choice-meta {
+        color: #929790;
+        font-size: 12px;
+      }
+
+      .checkmark {
+        display: grid;
+        place-items: center;
+        width: 18px;
+        height: 18px;
+        border: 1px solid #b9c1b9;
+        border-radius: 4px;
+        color: transparent;
+        font-size: 12px;
+      }
+
+      .choice-item.checked .checkmark {
+        border-color: var(--accent);
+        color: #fff;
+        background: var(--accent);
+      }
+
+      .field-label {
+        display: block;
+        margin: 16px 0 7px;
+        color: #5a6058;
+        font-size: 13px;
+        font-weight: 680;
+      }
+
+      .field-input,
+      .field-select {
+        width: 100%;
+        min-height: 39px;
+        padding: 0 11px;
+        border: 1px solid var(--line-strong);
+        border-radius: 6px;
+        outline: 0;
+        color: #41473f;
+        background: #fff;
+        font-size: 13px;
+      }
+
+      .field-input:focus,
+      .field-select:focus {
+        border-color: #7a9f92;
+        box-shadow: 0 0 0 3px rgba(46, 102, 88, 0.1);
+      }
+
+      .record-state {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px;
+        border: 1px solid #e1d5ba;
+        border-radius: 7px;
+        color: #7b5a1c;
+        background: var(--amber-soft);
+        font-size: 13px;
+      }
+
+      .record-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #c58420;
+      }
+
+      .modal-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 9px;
+        padding: 14px 20px;
+        border-top: 1px solid var(--line);
+      }
+
+      .secondary-button,
+      .primary-button {
+        min-height: 36px;
+        padding: 0 13px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 680;
+      }
+
+      .secondary-button {
+        border: 1px solid var(--line);
+        color: #565c55;
+        background: #fff;
+      }
+
+      .primary-button {
+        color: #fff;
+        background: var(--accent);
+      }
+
+      .primary-button:hover,
+      .send-button:hover,
+      .small-send:hover {
+        background: #245447;
+      }
+
+      .toast {
+        position: fixed;
+        z-index: 50;
+        right: 22px;
+        bottom: 22px;
+        display: none;
+        min-width: 240px;
+        max-width: 360px;
+        padding: 13px 15px;
+        border: 1px solid #bfd6cd;
+        border-radius: 7px;
+        color: #29594c;
+        background: #f2faf5;
+        box-shadow: 0 10px 30px rgba(24, 30, 26, 0.12);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .toast.visible {
+        display: block;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      @media (max-width: 1100px) {
+        .home {
+          padding-inline: 28px;
+        }
+
+        .task-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .workspace {
+          grid-template-columns: 225px minmax(360px, 1fr) 300px;
+        }
+      }
+
+      /* V5: restrained research-workbench visual language. */
+      :root {
+        --bg: #f5f5f3;
+        --surface: #fbfbfa;
+        --surface-2: #f0f1f1;
+        --text: #161719;
+        --muted: #72767c;
+        --line: #d9dce0;
+        --line-strong: #bdc3cb;
+        --ink: #161719;
+        --accent: #1269ec;
+        --accent-soft: #edf4ff;
+        --blue: #1269ec;
+        --blue-soft: #edf4ff;
+        --amber: #8a651e;
+        --amber-soft: #fff7e8;
+        --danger: #a74442;
+        --shadow: 0 20px 60px rgba(25, 31, 42, 0.12);
+      }
+
+      body,
+      button,
+      input,
+      textarea,
+      select {
+        font-family: Arial, Helvetica, "PingFang SC", "Microsoft YaHei", sans-serif;
+      }
+
+      .app {
+        grid-template-columns: 224px minmax(0, 1fr);
+      }
+
+      .sidebar {
+        padding: 18px 13px;
+        background: #fafafa;
+      }
+
+      .brand {
+        color: #111318;
+        letter-spacing: 0;
+      }
+
+      .brand-mark {
+        border-color: var(--accent);
+        border-radius: 2px;
+        background: var(--accent);
+      }
+
+      .sidebar-nav {
+        gap: 2px;
+        margin-top: 30px;
+      }
+
+      .nav-item {
+        position: relative;
+        border-radius: 0;
+      }
+
+      .nav-item.active {
+        color: #0a56c9;
+        background: var(--accent-soft);
+      }
+
+      .nav-item.active::before {
+        position: absolute;
+        left: 0;
+        width: 2px;
+        height: 18px;
+        content: "";
+        background: var(--accent);
+      }
+
+      .nav-item.active .nav-symbol {
+        color: var(--accent);
+      }
+
+      .sidebar-section {
+        margin-top: 34px;
+      }
+
+      .sidebar-label {
+        color: #72767c;
+        letter-spacing: 0.08em;
+      }
+
+      .sidebar-record {
+        min-height: 38px;
+        border-radius: 0;
+        color: #464b52;
+      }
+
+      .sidebar-record:hover {
+        color: #0a56c9;
+        background: var(--accent-soft);
+      }
+
+      .sidebar-bottom {
+        color: #4c5158;
+      }
+
+      .avatar {
+        border-radius: 2px;
+        background: #252932;
+      }
+
+      .home,
+      .course-space {
+        padding: 30px 54px 56px;
+      }
+
+      .home-header,
+      .course-shell {
+        max-width: 1120px;
+      }
+
+      .eyebrow {
+        color: #71767e;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+
+      .hero {
+        max-width: 980px;
+        margin: 66px auto 0;
+      }
+
+      h1 {
+        max-width: 600px;
+        color: #111317;
+        font-size: 46px;
+        font-weight: 700;
+        line-height: 1.08;
+      }
+
+      .hero-copy {
+        max-width: 470px;
+        margin: 15px 0 42px;
+        color: #62676e;
+        line-height: 1.55;
+      }
+
+      .scene-tabs {
+        gap: 0;
+        margin: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .scene-tab {
+        min-height: 42px;
+        padding: 0 17px 0 0;
+        border: 0;
+        border-bottom: 2px solid transparent;
+        border-radius: 0;
+        background: transparent;
+      }
+
+      .scene-tab + .scene-tab {
+        padding-left: 17px;
+      }
+
+      .scene-tab.active {
+        border-color: var(--accent);
+        color: #0958cd;
+        background: transparent;
+      }
+
+      .suggestions {
+        margin: 0 0 28px;
+        padding: 18px 0 25px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .task-grid {
+        gap: 0;
+      }
+
+      .task-card {
+        min-height: 114px;
+        padding: 16px 17px;
+        border: 0;
+        border-left: 1px solid var(--line);
+        border-radius: 0;
+        background: transparent;
+      }
+
+      .task-card:first-child {
+        border-left: 0;
+      }
+
+      .task-card:hover,
+      .task-card.selected {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+        box-shadow: none;
+      }
+
+      .task-card-title {
+        color: #252930;
+        line-height: 1.35;
+      }
+
+      .task-card-copy {
+        color: #747981;
+      }
+
+      .composer {
+        border-color: #bcc2ca;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .composer:focus-within {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(18, 105, 236, 0.12);
+      }
+
+      .prompt-wrap,
+      .prompt {
+        min-height: 145px;
+      }
+
+      .prompt {
+        padding: 22px;
+        font-size: 17px;
+      }
+
+      .context-row {
+        min-height: 61px;
+        background: #f8f9fa;
+      }
+
+      .context-action,
+      .course-select,
+      .send-button,
+      .tag,
+      .small-outline,
+      .secondary-button,
+      .primary-button,
+      .choice-item,
+      .modal,
+      .course-list-item,
+      .file-pick,
+      .field-input,
+      .field-select {
+        border-radius: 3px;
+      }
+
+      .context-action,
+      .course-select {
+        border-color: #cbd0d6;
+        background: #fff;
+      }
+
+      .context-action b {
+        color: var(--accent);
+      }
+
+      .course-select {
+        margin-left: auto;
+      }
+
+      .send-button,
+      .primary-button {
+        background: var(--accent);
+      }
+
+      .primary-button:hover,
+      .send-button:hover,
+      .small-send:hover {
+        background: #0757cf;
+      }
+
+      .tag {
+        border-color: #b8cdf5;
+        color: #1456b6;
+        background: #f3f7ff;
+      }
+
+      .course-space-head {
+        padding: 25px 0 28px;
+      }
+
+      .course-space-head h1 {
+        max-width: 760px;
+        font-size: 38px;
+      }
+
+      .course-space-subtitle {
+        max-width: 620px;
+        line-height: 1.55;
+      }
+
+      .course-overview {
+        gap: 28px;
+        padding-top: 30px;
+      }
+
+      .course-summary {
+        border-color: var(--line);
+        background: transparent;
+      }
+
+      .course-summary-value {
+        color: var(--accent);
+      }
+
+      .course-branch {
+        padding: 18px 0 0;
+        border-top: 1px solid var(--line);
+        border-left: 0;
+      }
+
+      .course-branch-head {
+        padding: 0 0 12px;
+      }
+
+      .course-branch-title {
+        color: #1f232a;
+      }
+
+      .course-list {
+        gap: 0;
+      }
+
+      .course-list-item {
+        min-height: 66px;
+        border-width: 1px 0 0;
+        border-radius: 0;
+        background: transparent;
+      }
+
+      .course-list-item:last-child {
+        border-bottom: 1px solid var(--line);
+      }
+
+      .course-list-item:hover {
+        border-color: #9abcf5;
+        background: #f5f8ff;
+      }
+
+      .course-file-icon {
+        border-color: #c6d6f1;
+        border-radius: 2px;
+        color: #1458bb;
+        background: #f1f6ff;
+      }
+
+      .course-item-open {
+        color: #0d5bd4;
+      }
+
+      .course-overview-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        min-height: 86px;
+        padding: 0;
+        border: 0;
+        border-top: 1px solid var(--line);
+        color: inherit;
+        background: transparent;
+        text-align: left;
+      }
+
+      .course-overview-row:last-child {
+        border-bottom: 1px solid var(--line);
+      }
+
+      .course-overview-row:hover .course-branch-title {
+        color: #0b5dd5;
+      }
+
+      .course-overview-arrow {
+        color: var(--accent);
+        font-size: 22px;
+      }
+
+      .workspace {
+        grid-template-columns: 268px minmax(400px, 1fr) 350px;
+      }
+
+      .workspace-top,
+      .agent-top {
+        background: #fafafa;
+      }
+
+      .agent-status {
+        border-radius: 2px;
+        color: #0958cd;
+        background: var(--accent-soft);
+      }
+
+      .source-icon {
+        border-radius: 2px;
+        color: #0c5bd3;
+        background: var(--accent-soft);
+      }
+
+      .user-message {
+        border-color: #bfd1f2;
+        border-radius: 3px;
+        color: #164f9f;
+        background: #f2f7ff;
+      }
+
+      .agent-message,
+      .artifact {
+        border-radius: 0;
+      }
+
+      .mini-tool {
+        border-radius: 2px;
+      }
+
+      .modal {
+        border-radius: 0;
+      }
+
+      .choice-item:hover,
+      .choice-item.checked {
+        border-color: #8eb3ef;
+        background: #f3f7ff;
+      }
+
+      .choice-item.checked .checkmark {
+        border-color: var(--accent);
+        background: var(--accent);
+      }
+
+      .content-course-title,
+      .field-input:focus,
+      .field-select:focus {
+        color: #0d5bd4;
+      }
+
+      .field-input:focus,
+      .field-select:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(18, 105, 236, 0.12);
+      }
+
+      /* V6: friendlier conversation surface and a light-touch Capsu notice. */
+      .hero-intro {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 302px;
+        align-items: start;
+        gap: 48px;
+        min-height: 390px;
+      }
+
+      .hero-intro h1 {
+        margin: 0;
+      }
+
+      .hero-intro .hero-copy {
+        margin-bottom: 0;
+      }
+
+      .capsu-notice-stage {
+        position: relative;
+        min-height: 390px;
+      }
+
+      .capsu-notice {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        padding: 19px 20px 18px;
+        border: 1px solid #d3d8e0;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.96);
+        box-shadow: 0 14px 34px rgba(26, 39, 61, 0.1);
+      }
+
+      .capsu-notice-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-bottom: 13px;
+        border-bottom: 1px solid #e4e7eb;
+      }
+
+      .capsu-notice-symbol {
+        display: grid;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 9px;
+        color: #fff;
+        background: var(--accent);
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .capsu-notice-title {
+        flex: 1;
+        color: #1c2027;
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .capsu-notice-close {
+        display: grid;
+        place-items: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        color: #767b84;
+        background: transparent;
+        font-size: 22px;
+        line-height: 1;
+      }
+
+      .capsu-notice-close:hover {
+        color: #1a58c6;
+        background: #edf4ff;
+      }
+
+      .capsu-notice p {
+        margin: 15px 0 14px;
+        color: #474d56;
+        font-size: 14px;
+        line-height: 1.58;
+      }
+
+      .capsu-notice-action {
+        padding: 0;
+        border-radius: 0;
+        color: #1163dd;
+        background: transparent;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .capsu-notice-action:hover {
+        color: #074caf;
+      }
+
+      .capsu-mascot {
+        position: absolute;
+        right: 20px;
+        top: 145px;
+        width: 202px;
+        height: 228px;
+        background-image: url("assets/capsu-mascot-reference.png");
+        background-position: -5px -150px;
+        background-repeat: no-repeat;
+        background-size: 700px 700px;
+        mix-blend-mode: multiply;
+        pointer-events: none;
+      }
+
+      .composer {
+        overflow: hidden;
+        border-radius: 22px;
+        box-shadow: 0 10px 28px rgba(27, 41, 62, 0.05);
+      }
+
+      .prompt-wrap,
+      .prompt {
+        min-height: 154px;
+      }
+
+      .context-row {
+        border-radius: 0 0 21px 21px;
+      }
+
+      .context-action,
+      .course-select {
+        min-height: 36px;
+        border-radius: 10px;
+      }
+
+      .send-button {
+        border-radius: 12px;
+      }
+
+      .modal {
+        border-radius: 18px;
+      }
+
+      .agent-composer {
+        overflow: hidden;
+        border-radius: 18px;
+        box-shadow: 0 10px 28px rgba(27, 41, 62, 0.05);
+      }
+
+      .agent-composer-footer {
+        padding: 0 10px 10px;
+      }
+
+      .small-send {
+        min-height: 32px;
+        padding-inline: 13px;
+        border-radius: 10px;
+      }
+
+      @media (max-width: 1100px) {
+        .home,
+        .course-space {
+          padding-inline: 32px;
+        }
+
+        .hero-intro {
+          grid-template-columns: minmax(0, 1fr) 278px;
+          gap: 30px;
+        }
+
+        .task-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .task-card:nth-child(odd) {
+          border-left: 0;
+        }
+      }
+
+      @media (max-width: 820px) {
+        .app {
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .sidebar {
+          display: none;
+        }
+
+        .home,
+        .course-space {
+          padding: 24px 20px 40px;
+        }
+
+        .hero {
+          margin-top: 38px;
+        }
+
+        .hero-intro {
+          display: block;
+          min-height: 0;
+        }
+
+        .capsu-notice-stage {
+          width: min(100%, 360px);
+          min-height: 0;
+          margin: 28px 0 34px;
+        }
+
+        .capsu-mascot {
+          display: none;
+        }
+
+        h1 {
+          font-size: 36px;
+        }
+
+        .scene-tabs,
+        .context-row,
+        .course-space-head {
+          flex-wrap: wrap;
+        }
+
+        .scene-tab,
+        .scene-tab + .scene-tab {
+          padding-inline: 10px;
+        }
+
+        .scene-tab:first-child {
+          padding-left: 0;
+        }
+
+        .task-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .task-card,
+        .task-card:nth-child(odd) {
+          border-top: 1px solid var(--line);
+          border-left: 0;
+        }
+
+        .task-card:first-child {
+          border-top: 0;
+        }
+
+        .context-row {
+          align-items: flex-start;
+        }
+
+        .course-select {
+          width: 100%;
+          margin-left: 0;
+        }
+
+        .workspace.visible {
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .workspace .panel,
+        .workspace .studio {
+          display: none;
+        }
+
+        .conversation {
+          width: min(720px, calc(100% - 32px));
+        }
+      }
+
+      /* V7: one focused starting surface, with the mascot physically anchored to the composer. */
+      .app {
+        grid-template-columns: 312px minmax(0, 1fr);
+      }
+
+      .sidebar {
+        padding: 22px 18px 18px;
+      }
+
+      .sidebar-reward-card {
+        min-height: 154px;
+        border-radius: 14px;
+        background: #edf4ff;
+        box-shadow: 0 10px 24px rgba(45, 113, 237, 0.1);
+      }
+
+      .sidebar-reward-copy {
+        gap: 7px;
+        padding: 21px 15px 17px 106px;
+      }
+
+      .sidebar-reward-kicker {
+        gap: 5px;
+        font-size: 15px;
+        line-height: 1.35;
+      }
+
+      .sidebar-reward-subtitle {
+        font-size: 13px;
+      }
+
+      .sidebar-reward-action {
+        justify-self: start;
+        margin-top: 9px;
+        font-size: 14px;
+      }
+
+      .sidebar-reward-mascot {
+        left: -18px;
+        bottom: -30px;
+        width: 138px;
+        height: 138px;
+        background-image: url("assets/capsu-peek-transparent.png");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+      }
+
+      .home,
+      .course-space {
+        padding: 28px 54px 56px;
+      }
+
+      .hero {
+        position: relative;
+        max-width: 1040px;
+        margin: 42px auto 0;
+      }
+
+      .hero-intro {
+        display: block;
+        min-height: 158px;
+      }
+
+      .hero-intro h1 {
+        max-width: 580px;
+        font-size: 42px;
+        line-height: 1.12;
+      }
+
+      .hero-intro .hero-copy {
+        max-width: 480px;
+        margin: 14px 0 0;
+      }
+
+      .capsu-notice-stage {
+        position: absolute;
+        top: 0;
+        right: 22px;
+        width: 330px;
+        min-height: 0;
+        margin: 0;
+        z-index: 6;
+      }
+
+      .capsu-notice {
+        padding: 16px 17px 15px;
+        border-radius: 18px;
+      }
+
+      .capsu-notice-head {
+        gap: 8px;
+        padding-bottom: 10px;
+      }
+
+      .capsu-notice-symbol {
+        width: 27px;
+        height: 27px;
+        border-radius: 8px;
+        font-size: 14px;
+      }
+
+      .capsu-notice-title {
+        font-size: 15px;
+      }
+
+      .capsu-notice p {
+        margin: 11px 0 10px;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .capsu-notice-action {
+        font-size: 13px;
+      }
+
+      .scene-tabs {
+        display: inline-flex;
+        gap: 3px;
+        margin: 0 0 8px;
+        padding: 4px;
+        border: 1px solid #d9dce0;
+        border-radius: 14px;
+        background: #f5f6f7;
+      }
+
+      .scene-tab,
+      .scene-tab + .scene-tab {
+        min-height: 34px;
+        padding: 0 12px;
+        border: 0;
+        border-radius: 10px;
+        color: #61666e;
+        font-size: 13px;
+      }
+
+      .scene-tab.active {
+        border: 0;
+        color: #0756cb;
+        background: #fff;
+        box-shadow: 0 1px 4px rgba(30, 38, 52, 0.1);
+      }
+
+      .suggestions {
+        max-width: 980px;
+        margin: 0 0 13px;
+        padding: 0;
+        border: 0;
+      }
+
+      .task-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+      }
+
+      .task-card,
+      .task-card:first-child,
+      .task-card:nth-child(odd) {
+        min-height: 34px;
+        padding: 0 12px;
+        border: 1px solid #d9dce0;
+        border-radius: 10px;
+        background: #fff;
+      }
+
+      .task-card:hover,
+      .task-card.selected {
+        border-color: #8db6f6;
+        background: #edf4ff;
+        box-shadow: none;
+      }
+
+      .task-card-title {
+        font-size: 13px;
+        font-weight: 650;
+        white-space: nowrap;
+      }
+
+      .task-card-copy {
+        display: none;
+      }
+
+      .composer {
+        position: relative;
+        z-index: 2;
+        max-width: 980px;
+        margin-top: 58px;
+        overflow: hidden;
+        border-radius: 24px;
+      }
+
+      .prompt-wrap,
+      .prompt {
+        min-height: 210px;
+      }
+
+      .prompt {
+        padding: 24px 280px 24px 24px;
+        font-size: 17px;
+      }
+
+      .context-row {
+        min-height: 64px;
+        padding: 12px;
+        border-radius: 0 0 23px 23px;
+      }
+
+      .capsu-mascot {
+        position: absolute;
+        top: 158px;
+        right: 126px;
+        z-index: 4;
+        display: block;
+        width: 188px;
+        height: 248px;
+        background-image: url("assets/capsu-sitting-transparent.png");
+        background-position: -28px -161px;
+        background-repeat: no-repeat;
+        background-size: 631px 631px;
+        mix-blend-mode: normal;
+        pointer-events: none;
+      }
+
+      @media (max-width: 1100px) {
+        .app {
+          grid-template-columns: 280px minmax(0, 1fr);
+        }
+
+        .home,
+        .course-space {
+          padding-inline: 36px;
+        }
+
+        .hero {
+          max-width: 900px;
+        }
+
+        .capsu-notice-stage {
+          right: 0;
+          width: 300px;
+        }
+
+        .capsu-mascot {
+          right: 88px;
+        }
+
+        .prompt {
+          padding-right: 250px;
+        }
+      }
+
+      @media (max-width: 820px) {
+        .app {
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .sidebar {
+          display: none;
+        }
+
+        .home,
+        .course-space {
+          padding: 24px 20px 40px;
+        }
+
+        .hero {
+          margin-top: 38px;
+        }
+
+        .hero-intro {
+          min-height: 0;
+        }
+
+        .hero-intro h1 {
+          font-size: 36px;
+        }
+
+        .capsu-notice-stage {
+          position: relative;
+          inset: auto;
+          width: min(100%, 360px);
+          margin: 24px 0 28px;
+        }
+
+        .capsu-mascot {
+          display: none;
+        }
+
+        .scene-tabs {
+          display: flex;
+          width: 100%;
+          overflow-x: auto;
+        }
+
+        .scene-tab,
+        .scene-tab + .scene-tab {
+          flex: 0 0 auto;
+        }
+
+        .task-grid {
+          gap: 6px;
+        }
+
+        .task-card,
+        .task-card:first-child,
+        .task-card:nth-child(odd) {
+          min-height: 34px;
+        }
+
+        .prompt {
+          min-height: 156px;
+          padding: 20px;
+        }
+      }
+
+      /* V8: tighter WorkBuddy-inspired focus without copying its visual treatment. */
+      .hero {
+        width: min(960px, 100%);
+        max-width: 960px;
+        margin: 24px auto 0;
+      }
+
+      .hero-intro {
+        min-height: 104px;
+      }
+
+      .hero-intro h1 {
+        max-width: 620px;
+      }
+
+      .hero-intro .hero-copy {
+        margin-top: 12px;
+      }
+
+      .capsu-notice-stage {
+        top: -48px;
+        right: 0;
+        width: 272px;
+      }
+
+      .capsu-notice {
+        padding: 14px 15px 12px;
+      }
+
+      .capsu-notice-head {
+        padding-bottom: 8px;
+      }
+
+      .capsu-notice p {
+        margin: 9px 0 7px;
+        font-size: 12.5px;
+        line-height: 1.45;
+      }
+
+      .scene-tabs {
+        margin: 4px 0 8px;
+      }
+
+      .suggestions {
+        width: min(820px, 100%);
+        max-width: 820px;
+        margin-bottom: 10px;
+      }
+
+      .composer {
+        width: min(820px, 100%);
+        max-width: 820px;
+        margin-top: 24px;
+        border-radius: 22px;
+      }
+
+      .prompt-wrap,
+      .prompt {
+        min-height: 178px;
+      }
+
+      .prompt {
+        padding: 22px 190px 22px 22px;
+        font-size: 16px;
+      }
+
+      .context-row {
+        min-height: 60px;
+        padding: 10px;
+        border-radius: 0 0 21px 21px;
+      }
+
+      .capsu-mascot {
+        top: 116px;
+        right: 72px;
+        width: 132px;
+        height: 190px;
+        background-image: url("data:image/webp;base64,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");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+      }
+
+      .sidebar-reward-mascot {
+        left: -14px;
+        bottom: -30px;
+        width: 132px;
+        height: 142px;
+        background-image: url("data:image/webp;base64,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");
+        background-position: center bottom;
+        background-repeat: no-repeat;
+        background-size: contain;
+      }
+
+      @media (max-width: 1100px) {
+        .hero {
+          width: min(860px, 100%);
+        }
+
+        .suggestions,
+        .composer {
+          width: min(760px, 100%);
+        }
+
+        .capsu-mascot {
+          right: 54px;
+        }
+      }
+
+      @media (max-width: 820px) {
+        .hero {
+          margin-top: 28px;
+        }
+
+        .hero-intro {
+          min-height: 0;
+        }
+
+        .scene-tabs {
+          margin-top: 18px;
+        }
+
+        .suggestions,
+        .composer {
+          width: 100%;
+        }
+
+        .composer {
+          margin-top: 20px;
+        }
+
+        .prompt {
+          padding: 20px;
+        }
+      }
+
+      /* Keep the two mascots as small UI accents, anchored to their own surfaces. */
+      .sidebar-reward-mascot {
+        left: -4px;
+        bottom: -7px;
+        width: 41px;
+        height: 44px;
+        background-position: center bottom;
+      }
+
+      .sidebar-reward-copy {
+        gap: 4px;
+        padding: 14px 16px 13px 22px;
+      }
+
+      .sidebar-reward-card {
+        min-height: 100px;
+      }
+
+      .sidebar-reward-kicker {
+        font-size: 14px;
+      }
+
+      .sidebar-reward-subtitle {
+        font-size: 12px;
+      }
+
+      .sidebar-reward-action {
+        margin-top: 4px;
+        margin-left: 44px;
+        font-size: 13px;
+      }
+
+      .composer {
+        overflow: visible;
+      }
+
+      .composer .capsu-mascot {
+        position: absolute;
+        top: auto;
+        right: 64px;
+        bottom: calc(100% - 17px);
+        z-index: 3;
+        width: 54px;
+        height: 78px;
+        background-position: center bottom;
+        background-size: contain;
+      }
+
+      .capsu-notice-stage {
+        top: 28px;
+        right: 127px;
+        width: 208px;
+      }
+
+      .capsu-notice {
+        padding: 11px 12px 10px;
+        border-radius: 16px;
+      }
+
+      .capsu-notice-head {
+        gap: 7px;
+        padding-bottom: 7px;
+      }
+
+      .capsu-notice-symbol {
+        width: 24px;
+        height: 24px;
+        border-radius: 7px;
+        font-size: 13px;
+      }
+
+      .capsu-notice-title {
+        font-size: 14px;
+      }
+
+      .capsu-notice-close {
+        width: 22px;
+        height: 22px;
+        font-size: 19px;
+      }
+
+      .capsu-notice p {
+        margin: 8px 0 6px;
+        font-size: 11.5px;
+        line-height: 1.4;
+      }
+
+      .capsu-notice-action {
+        font-size: 12px;
+      }
+
+      .capsu-notice::after {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        width: 1px;
+        height: 14px;
+        background: #c9d0d8;
+        content: "";
+      }
+
+      @media (max-width: 1100px) {
+        .composer .capsu-mascot {
+          right: 52px;
+        }
+
+        .capsu-notice-stage {
+          right: 75px;
+        }
+      }
+
+      @media (max-width: 820px) {
+        .capsu-notice-stage {
+          position: relative;
+          top: auto;
+          right: auto;
+          width: min(100%, 360px);
+        }
+
+        .capsu-notice::after {
+          display: none;
+        }
+
+        .composer .capsu-mascot {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app" id="homeApp">
+      <aside class="sidebar">
+        <div class="brand"><span class="brand-mark">C</span><span>Capsu.ai</span></div>
+        <nav class="sidebar-nav" aria-label="主导航">
+          <button class="nav-item active" id="homeNav" data-nav="home"><span class="nav-symbol">⌂</span>主页</button>
+          <button class="nav-item"><span class="nav-symbol">⌕</span>搜索</button>
+          <button class="nav-item" id="coursesNav" data-nav="courses"><span class="nav-symbol">▱</span>课程总览</button>
+        </nav>
+        <section class="sidebar-section">
+          <div class="sidebar-label">学习记录</div>
+          <div id="sidebarRecords"></div>
+        </section>
+        <div class="sidebar-account-zone" id="sidebarAccountZone">
+          <div class="sidebar-reward-mount" id="sidebarRewardDefault">
+            <section class="sidebar-reward-card" id="sidebarRewardCard" aria-label="添加企业微信，领取更长使用时间">
+              <div class="sidebar-reward-copy">
+                <div class="sidebar-reward-kicker"><span class="wechat-mark" aria-hidden="true"></span>领取更长使用时间</div>
+                <div class="sidebar-reward-subtitle">添加企业微信</div>
+                <button class="sidebar-reward-action" id="addWeComButton">立即添加 →</button>
+              </div>
+              <div class="sidebar-reward-mascot" aria-hidden="true"></div>
+            </section>
+          </div>
+          <section class="account-menu" id="accountMenu" aria-label="账户菜单">
+            <div class="sidebar-reward-mount" id="sidebarRewardMenu"></div>
+            <div class="account-menu-profile">
+              <div class="account-menu-name">Yilin</div>
+              <div class="account-menu-email">yilin@capsu.ai</div>
+            </div>
+            <div class="account-menu-section">
+              <button class="account-menu-item"><span class="account-menu-icon" aria-hidden="true">⚙</span>设置</button>
+              <button class="account-menu-item"><span class="account-menu-icon" aria-hidden="true">?</span>联系支持</button>
+            </div>
+            <div class="recording-quota">
+              <div class="recording-quota-label">2 / 100 录音分钟</div>
+              <div class="recording-quota-track"><div class="recording-quota-value"></div></div>
+            </div>
+            <div class="account-menu-section">
+              <button class="account-menu-item logout"><span class="account-menu-icon" aria-hidden="true">↪</span>退出登录</button>
+            </div>
+          </section>
+          <button class="sidebar-bottom" id="accountButton" aria-expanded="false" aria-controls="accountMenu">
+            <span class="avatar">Y</span>
+            <span class="account-details"><span class="account-name">Yilin</span><span class="account-plan">免费版</span></span>
+            <span class="account-chevron" aria-hidden="true">⌄</span>
+          </button>
+        </div>
+      </aside>
+
+      <main class="home">
+        <div class="home-header">
+          <div class="eyebrow">主页</div>
+        </div>
+
+        <section class="hero">
+          <div class="hero-intro">
+            <div>
+              <h1>这次学习，想从哪里开始？</h1>
+              <p class="hero-copy">输入问题，上传资料，或开始一段课堂录音。</p>
+            </div>
+            <aside class="capsu-notice-stage" id="capsuNoticeStage" aria-label="Capsu 提醒">
+              <div class="capsu-notice">
+                <div class="capsu-notice-head">
+                  <span class="capsu-notice-symbol" aria-hidden="true">C</span>
+                  <span class="capsu-notice-title">Capsu 提醒</span>
+                  <button class="capsu-notice-close" id="capsuNoticeClose" aria-label="关闭提醒">×</button>
+                </div>
+                <p>上传资料、开始课堂录音，或直接提出你的学习问题。</p>
+                <button class="capsu-notice-action" id="capsuNoticeAction">知道了</button>
+              </div>
+            </aside>
+          </div>
+
+          <div class="scene-tabs" id="sceneTabs">
+            <button class="scene-tab active" data-scene="pre">预习与课业</button>
+            <button class="scene-tab" data-scene="class">课堂与讨论</button>
+            <button class="scene-tab" data-scene="after">课后巩固</button>
+            <button class="scene-tab" data-scene="exam">考试复习</button>
+          </div>
+
+          <section class="suggestions">
+            <div class="task-grid" id="taskGrid"></div>
+          </section>
+
+          <div class="composer">
+            <div class="context-tags" id="contextTags"></div>
+            <div class="prompt-wrap">
+              <textarea
+                class="prompt"
+                id="mainPrompt"
+                aria-label="学习任务"
+                placeholder="把课件、录音或你想解决的学习问题交给 Capsu"
+              ></textarea>
+            </div>
+            <div class="context-row">
+              <button class="context-action" id="uploadButton"><b>＋</b>上传资料</button>
+              <button class="context-action" id="recordButton"><b>◉</b>开始课堂录音</button>
+              <button class="context-action" id="noteButton"><b>＋</b>添加已有学习内容</button>
+              <button class="course-select" id="courseButton">归入课程：<strong id="courseName">未归档</strong>⌄</button>
+              <button class="send-button" id="sendButton" aria-label="开始任务">↑</button>
+            </div>
+            <div class="capsu-mascot" aria-hidden="true"></div>
+          </div>
+        </section>
+      </main>
+
+      <main class="course-space" id="courseSpace">
+        <div class="course-shell">
+          <div class="home-header">
+            <div class="eyebrow">课程空间</div>
+            <button class="header-action" id="backToHome">返回主页</button>
+          </div>
+          <header class="course-space-head">
+            <div>
+              <h1 id="courseSpaceTitle">ECON101 微观经济学</h1>
+              <p class="course-space-subtitle" id="courseSpaceSubtitle">原始资料、每次与 AI 的学习对话，以及可以反复调用的学习成果。</p>
+            </div>
+            <div class="course-head-actions">
+              <button class="small-outline" id="courseSpaceUpload">＋ 添加学习资料</button>
+            </div>
+          </header>
+          <section class="course-overview" id="courseOverview"></section>
+        </div>
+      </main>
+    </div>
+
+    <main class="workspace" id="workspace">
+      <aside class="panel">
+        <div class="workspace-top">
+          <div class="workspace-title">来源<small id="sourceCount">0 份资料</small></div>
+          <button class="icon-button" id="workspaceUpload" aria-label="添加资料">＋</button>
+        </div>
+        <div class="source-list" id="sourceList"></div>
+        <button class="source-add" id="workspaceNote">＋ 添加已有学习内容</button>
+      </aside>
+
+      <section class="agent">
+        <header class="agent-top">
+          <button class="icon-button" id="backHome" aria-label="返回主页">‹</button>
+          <div class="agent-title" id="noteTitle">新的学习记录</div>
+          <span class="agent-status" id="agentStatus">正在解析</span>
+          <button class="finish-recording hidden" id="finishRecordingButton">结束录音并整理</button>
+        </header>
+        <div class="conversation" id="conversation"></div>
+        <div class="agent-composer">
+          <textarea id="followUpPrompt" placeholder="继续追问，或让 Capsu 调整结果"></textarea>
+          <div class="agent-composer-footer"><button class="small-send" id="followUpSend">发送</button></div>
+        </div>
+      </section>
+
+      <aside class="studio">
+        <div class="workspace-top">
+          <div class="workspace-title">工作室<small>本次学习成果</small></div>
+          <button class="icon-button" id="exportButton" aria-label="导出">⇩</button>
+        </div>
+        <div class="studio-tools">
+          <button class="mini-tool" data-tool="mindmap">脑图</button>
+          <button class="mini-tool" data-tool="flashcard">闪卡</button>
+          <button class="mini-tool" data-tool="quiz">测验</button>
+        </div>
+        <div class="studio-content" id="studioContent"></div>
+      </aside>
+    </main>
+
+    <div class="modal-layer" id="uploadModal" role="dialog" aria-modal="true" aria-labelledby="uploadTitle">
+      <section class="modal">
+        <div class="modal-header">
+          <div class="modal-title" id="uploadTitle">添加学习资料</div>
+          <button class="icon-button" data-close="uploadModal" aria-label="关闭">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="upload-zone">
+            <div>
+              <strong>拖入文件，或从设备中选择</strong>
+              <span>支持 PDF、音频文件</span>
+              <label class="file-pick">选择设备文件<input id="fileInput" type="file" multiple accept=".pdf,audio/*" /></label>
+            </div>
+          </div>
+          <div class="modal-section-title">测试资料</div>
+          <div class="choice-list" id="sampleFiles"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="secondary-button" data-close="uploadModal">取消</button>
+          <button class="primary-button" id="addFilesButton">添加资料</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-layer" id="recordModal" role="dialog" aria-modal="true" aria-labelledby="recordTitle">
+      <section class="modal">
+        <div class="modal-header">
+          <div class="modal-title" id="recordTitle">开始课堂录音</div>
+          <button class="icon-button" data-close="recordModal" aria-label="关闭">×</button>
+        </div>
+        <div class="modal-body">
+          <label class="field-label" for="recordName">录音名称</label>
+          <input class="field-input" id="recordName" value="课堂录音 · 7月19日" />
+          <label class="field-label" for="transcriptLanguage">转录语言</label>
+          <select class="field-select" id="transcriptLanguage">
+            <option>English</option>
+            <option>中文</option>
+            <option>English + 中文</option>
+          </select>
+          <label class="field-label" for="translationLanguage">翻译语言</label>
+          <select class="field-select" id="translationLanguage">
+            <option>不翻译</option>
+            <option>中文</option>
+            <option>English</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button class="secondary-button" data-close="recordModal">取消</button>
+          <button class="primary-button" id="startRecordingButton">开始录音</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-layer" id="notesModal" role="dialog" aria-modal="true" aria-labelledby="notesTitle">
+      <section class="modal">
+        <div class="modal-header">
+          <div class="modal-title" id="notesTitle">添加已有学习内容</div>
+          <div class="modal-header-actions">
+            <button class="small-outline hidden" id="notesBack">返回课程</button>
+            <button class="icon-button" data-close="notesModal" aria-label="关闭">×</button>
+          </div>
+        </div>
+        <div class="modal-body">
+          <p class="modal-copy" id="notesCopy">先选择一门课程，再决定引用哪些资料、学习记录或学习成果。</p>
+          <input class="field-input hidden" id="noteSearch" placeholder="搜索当前课程内容" />
+          <div class="modal-section-title" id="notesSectionTitle">课程</div>
+          <div class="choice-list" id="noteChoices"></div>
+        </div>
+        <div class="modal-footer">
+          <button class="secondary-button" data-close="notesModal">取消</button>
+          <button class="primary-button" id="addNotesButton">添加内容</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-layer" id="courseModal" role="dialog" aria-modal="true" aria-labelledby="courseTitle">
+      <section class="modal">
+        <div class="modal-header">
+          <div class="modal-title" id="courseTitle">归入课程</div>
+          <button class="icon-button" data-close="courseModal" aria-label="关闭">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="choice-list" id="courseChoices"></div>
+          <label class="field-label" for="newCourseName">新建课程</label>
+          <input class="field-input" id="newCourseName" placeholder="例如：ECON101 微观经济学" />
+        </div>
+        <div class="modal-footer">
+          <button class="secondary-button" data-close="courseModal">取消</button>
+          <button class="primary-button" id="saveCourseButton">确定</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-layer" id="exportModal" role="dialog" aria-modal="true" aria-labelledby="exportTitle">
+      <section class="modal">
+        <div class="modal-header">
+          <div class="modal-title" id="exportTitle">导出学习成果</div>
+          <button class="icon-button" data-close="exportModal" aria-label="关闭">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="choice-list">
+            <button class="choice-item" data-export="PDF"><span>导出为 PDF</span><span class="choice-meta">适合打印或提交</span></button>
+            <button class="choice-item" data-export="Word"><span>导出为 Word</span><span class="choice-meta">继续编辑内容</span></button>
+            <button class="choice-item" data-export="Image"><span>导出为图片</span><span class="choice-meta">适合脑图与分享</span></button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-layer" id="saveResultModal" role="dialog" aria-modal="true" aria-labelledby="saveResultTitle">
+      <section class="modal">
+        <div class="modal-header">
+          <div class="modal-title" id="saveResultTitle">保存为学习成果</div>
+          <button class="icon-button" data-close="saveResultModal" aria-label="关闭">×</button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-copy">将本次对话整理为可在课程中再次打开、并在以后学习时引用的笔记。</p>
+          <label class="field-label" for="resultName">成果名称</label>
+          <input class="field-input" id="resultName" />
+        </div>
+        <div class="modal-footer">
+          <button class="secondary-button" data-close="saveResultModal">取消</button>
+          <button class="primary-button" id="saveResultButton">保存</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      const sceneData = {
+        pre: {
+          label: "预习与课业",
+          tasks: [
+            { title: "读懂一份 Reading / 课件", copy: "先理解结构、概念和重点", prompt: "帮我读懂这份 Reading / 课件：梳理核心论点、关键概念，并指出我需要重点理解的部分。" },
+            { title: "梳理作业要求", copy: "拆开任务、要求与下一步", prompt: "帮我梳理这份作业要求：明确要交付什么、评分重点是什么，并给出完成步骤。" },
+            { title: "准备 Seminar / Tutorial", copy: "带着观点和问题去讨论", prompt: "帮我准备一场 Seminar / Tutorial：提炼核心观点、可能的分歧，并给我几个可以主动提出的问题。" },
+            { title: "准备课堂讨论问题", copy: "把模糊疑问变成好问题", prompt: "根据我提供的资料，帮我准备课堂讨论问题：优先找出最值得澄清、比较或辩论的点。" }
+          ]
+        },
+        class: {
+          label: "课堂与讨论",
+          tasks: [
+            { title: "记录讨论要点", copy: "留下观点、分歧与待确认项", prompt: "帮我记录这次讨论的核心观点、不同立场、结论和我接下来需要确认的问题。" },
+            { title: "课上快速问清概念", copy: "用已有资料解释一个问题", prompt: "请结合我提供的课堂资料，用简明的方式解释我不理解的概念：" },
+            { title: "准备课堂发言", copy: "快速组织一个有依据的观点", prompt: "根据我提供的资料，帮我组织一段课堂发言：给出一个清楚的观点、依据和可能的回应。" },
+            { title: "整理一段讨论录音", copy: "把已有录音变成可回顾的内容", prompt: "请整理这段讨论录音：提炼主要观点、分歧、结论和待确认的问题。" }
+          ]
+        },
+        after: {
+          label: "课后巩固",
+          tasks: [
+            { title: "整理这节课", copy: "从资料和录音中抓住主线", prompt: "帮我整理这节课：总结最重要的知识主线、关键术语和下一步该复习什么。" },
+            { title: "生成学习指南", copy: "把内容转为可执行的复习材料", prompt: "根据我提供的资料，生成一份学习指南：从核心概念、步骤、易错点到复习顺序。" },
+            { title: "画知识脑图", copy: "看清概念之间的关系", prompt: "请根据资料梳理一张知识脑图，展示核心概念、层级关系与关键联系。" },
+            { title: "继续问 AI", copy: "从不明白的地方开始追问", prompt: "我想基于这些资料继续理解：" }
+          ]
+        },
+        exam: {
+          label: "考试复习",
+          tasks: [
+            { title: "生成闪卡", copy: "用重点概念开始记忆", prompt: "根据我提供的资料生成闪卡，优先覆盖考试最需要记住的概念、定义和易混点。" },
+            { title: "做一组测验", copy: "先测出真正不熟的部分", prompt: "根据我提供的资料生成一组测验题，覆盖核心知识点，并在结束后分析我的薄弱点。" },
+            { title: "定位薄弱知识点", copy: "把复习时间花在关键处", prompt: "帮我根据这些资料建立复习重点：区分必须掌握、容易混淆和可以后看的内容。" },
+            { title: "整理考前速记", copy: "把内容压缩成最后一页", prompt: "把这些资料整理成一份考前速记：保留关键公式、定义、比较点和易错提醒。" }
+          ]
+        }
+      };
+
+      const sampleFiles = [
+        { id: "market-society-reading", name: "The Market and Society.pdf", meta: "PDF · 2.4 MB" },
+        { id: "inequality-slides", name: "Seminar slides - inequality.pdf", meta: "PDF · 1.1 MB" },
+        { id: "lecture-recording", name: "Microeconomics lecture recording.m4a", meta: "音频 · 43 分钟" }
+      ];
+
+      const studySpaces = {
+        unfiled: { id: "unfiled", name: "未归档", materials: [], records: [], results: [] },
+        econ101: {
+          id: "econ101",
+          name: "ECON101 微观经济学",
+          materials: [
+            { id: "econ-slides", name: "Lecture slides - market structure.pdf", meta: "PDF · 32 页 · 7月17日" },
+            { id: "econ-reading", name: "Reading - market and society.pdf", meta: "PDF · 18 页 · 7月16日" },
+            { id: "econ-audio", name: "课堂录音 · Market structure", meta: "录音 · 已转写 · 48 分钟" }
+          ],
+          records: [
+            {
+              id: "econ-seminar",
+              name: "准备 Seminar：市场与社会",
+              meta: "学习记录 · 7月17日",
+              prompt: "帮我准备一场 Seminar / Tutorial：提炼核心观点、可能的分歧，并给我几个可以主动提出的问题。",
+              assistant: "我已梳理出这次讨论的核心观点、可能的分歧和可继续追问的问题。"
+            },
+            {
+              id: "econ-summary",
+              name: "整理课堂：市场结构",
+              meta: "学习记录 · 7月16日",
+              prompt: "帮我整理这节课：总结最重要的知识主线、关键术语和下一步该复习什么。",
+              assistant: "课堂的主线是比较不同市场结构下企业决策、竞争程度与消费者福利之间的关系。"
+            }
+          ],
+          results: [
+            { id: "econ-map", name: "市场结构知识脑图", kind: "mindmap", meta: "脑图 · 来自「整理课堂：市场结构」", recordId: "econ-summary" },
+            { id: "econ-cards", name: "市场结构闪卡组", kind: "flashcard", meta: "闪卡 · 20 张 · 来自「整理课堂：市场结构」", recordId: "econ-summary" }
+          ]
+        },
+        law: {
+          id: "law",
+          name: "Introduction to Law",
+          materials: [{ id: "law-case", name: "Case brief - Donoghue v Stevenson.pdf", meta: "PDF · 12 页 · 7月12日" }],
+          records: [{ id: "law-brief", name: "梳理 Case brief", meta: "学习记录 · 7月12日", prompt: "帮我梳理这份 Case brief 的事实、争点、裁判理由与可引用的规则。", assistant: "我已按事实、法律争点、判决理由与规则四部分整理这份 Case brief。" }],
+          results: [{ id: "law-guide", name: "Tort law 学习指南", kind: "guide", meta: "学习指南 · 来自「梳理 Case brief」", recordId: "law-brief" }]
+        },
+        research: {
+          id: "research",
+          name: "Research Methods",
+          materials: [{ id: "research-audio", name: "Methods workshop recording", meta: "录音 · 已转写 · 56 分钟" }],
+          records: [{ id: "research-question", name: "解释 sampling bias", meta: "学习记录 · 7月10日", prompt: "请结合我的资料解释 sampling bias，并给我一个能快速判断的例子。", assistant: "Sampling bias 指样本进入研究的机会并不均等，从而使样本系统性偏离目标总体。" }],
+          results: []
+        }
+      };
+
+      const state = {
+        scene: "pre",
+        selectedTask: null,
+        files: [],
+        contents: [],
+        recording: null,
+        recordingMode: false,
+        courseId: "unfiled",
+        courseSelection: "unfiled",
+        sampleSelection: new Set(),
+        contentSelection: new Set(),
+        activeCourseId: "econ101",
+        courseView: "detail",
+        currentResult: "学习整理",
+        currentRecord: null,
+        generatedTools: [],
+        reopeningRecord: false,
+        openingResult: null,
+        contentCourseId: null,
+        accountMenuOpen: false
+      };
+
+      const byId = (id) => document.getElementById(id);
+      const mainPrompt = byId("mainPrompt");
+      const taskGrid = byId("taskGrid");
+      const contextTags = byId("contextTags");
+      const courseName = byId("courseName");
+      const courseValues = () => Object.values(studySpaces);
+      const currentCourse = () => studySpaces[state.courseId];
+      const activeCourse = () => studySpaces[state.activeCourseId];
+      const iconFor = (kind) => (kind === "recording" ? "◉" : kind === "course" ? "▱" : kind === "record" ? "□" : kind === "result" ? "✦" : "▤");
+
+      function openModal(id) {
+        byId(id).classList.add("visible");
+      }
+
+      function closeModal(id) {
+        byId(id).classList.remove("visible");
+      }
+
+      function showToast(message) {
+        const toast = byId("toast");
+        toast.textContent = message;
+        toast.classList.add("visible");
+        window.clearTimeout(showToast.timer);
+        showToast.timer = window.setTimeout(() => toast.classList.remove("visible"), 3200);
+      }
+
+      function renderAccountMenu() {
+        const rewardCard = byId("sidebarRewardCard");
+        const rewardMount = state.accountMenuOpen ? byId("sidebarRewardMenu") : byId("sidebarRewardDefault");
+        rewardMount.append(rewardCard);
+        byId("accountMenu").classList.toggle("visible", state.accountMenuOpen);
+        byId("accountButton").setAttribute("aria-expanded", String(state.accountMenuOpen));
+      }
+
+      function updateCourseName() {
+        courseName.textContent = currentCourse().name;
+      }
+
+      function setActiveNavigation(view) {
+        document.querySelectorAll("[data-nav]").forEach((item) => {
+          item.classList.toggle("active", item.dataset.nav === view);
+        });
+      }
+
+      function renderSidebarRecords() {
+        const container = byId("sidebarRecords");
+        container.innerHTML = "";
+        courseValues()
+          .filter((course) => course.id !== "unfiled")
+          .flatMap((course) => course.records.map((record) => ({ course, record })))
+          .forEach(({ course, record }) => {
+            const button = document.createElement("button");
+            button.className = "sidebar-record";
+            button.title = `${record.name} · ${course.name}`;
+            button.innerHTML = `<span class="sidebar-record-title">□ ${record.name}</span>`;
+            button.addEventListener("click", () => openLearningRecord(course, record.id));
+            container.appendChild(button);
+          });
+      }
+
+      function renderScene() {
+        document.querySelectorAll(".scene-tab").forEach((tab) => {
+          tab.classList.toggle("active", tab.dataset.scene === state.scene);
+        });
+        const current = sceneData[state.scene];
+        taskGrid.innerHTML = "";
+        current.tasks.forEach((task) => {
+          const button = document.createElement("button");
+          button.className = "task-card" + (state.selectedTask === task.title ? " selected" : "");
+          button.innerHTML = `<span class="task-card-title">${task.title}</span><span class="task-card-copy">${task.copy}</span>`;
+          button.addEventListener("click", () => selectTask(task));
+          taskGrid.appendChild(button);
+        });
+      }
+
+      function selectTask(task) {
+        state.selectedTask = task.title;
+        mainPrompt.value = task.prompt;
+        renderScene();
+        mainPrompt.focus();
+      }
+
+      function allContextItems() {
+        const items = [
+          ...state.files.map((file) => ({ kind: "file", id: file.id, label: file.name, meta: file.meta, source: file })),
+          ...state.contents.map((content) => ({ kind: content.kind, id: content.id, label: content.name, meta: content.meta, source: content }))
+        ];
+        if (state.recording) {
+          items.push({ kind: "recording", id: state.recording.id, label: state.recording.name, meta: state.recording.meta, source: state.recording });
+        }
+        return items;
+      }
+
+      function renderContext() {
+        contextTags.innerHTML = "";
+        allContextItems().forEach((item) => {
+          const tag = document.createElement("span");
+          tag.className = "tag";
+          tag.innerHTML = `<span>${iconFor(item.kind)} ${item.label}</span><button class="remove-tag" aria-label="移除 ${item.label}">×</button>`;
+          tag.querySelector("button").addEventListener("click", () => {
+            if (item.kind === "file") state.files = state.files.filter((file) => file.id !== item.id);
+            if (item.kind === "recording") state.recording = null;
+            if (["course", "material", "record", "result"].includes(item.kind)) state.contents = state.contents.filter((content) => content.id !== item.id);
+            renderContext();
+          });
+          contextTags.appendChild(tag);
+        });
+      }
+
+      function addMaterialToCourse(file) {
+        const course = currentCourse();
+        if (!course.materials.some((material) => material.name === file.name)) {
+          course.materials.unshift({ id: `material-${file.id}`, name: file.name, meta: file.meta.includes("音频") ? `${file.meta} · 等待转写` : `${file.meta} · 等待解析` });
+        }
+        renderSidebarRecords();
+        renderCourseSpace();
+      }
+
+      function addFileToTask(file) {
+        if (!state.files.some((item) => item.id === file.id)) {
+          state.files.push(file);
+          addMaterialToCourse(file);
+        }
+      }
+
+      function renderSampleFiles() {
+        const list = byId("sampleFiles");
+        list.innerHTML = "";
+        sampleFiles.forEach((file) => {
+          const item = document.createElement("button");
+          item.className = "choice-item" + (state.sampleSelection.has(file.id) ? " checked" : "");
+          item.innerHTML = `<span><strong>${file.name}</strong><span class="choice-meta">${file.meta}</span></span><span class="checkmark">✓</span>`;
+          item.addEventListener("click", () => {
+            state.sampleSelection.has(file.id) ? state.sampleSelection.delete(file.id) : state.sampleSelection.add(file.id);
+            renderSampleFiles();
+          });
+          list.appendChild(item);
+        });
+      }
+
+      function libraryOptions() {
+        return courseValues()
+          .filter((course) => course.id !== "unfiled")
+          .map((course) => ({
+            course,
+            groups: [
+              {
+                label: "课程资料库",
+                items: [{ id: `scope-${course.id}`, kind: "course", name: "整门课程资料库", meta: `${course.materials.length} 份学习资料` }]
+              },
+              { label: "学习资料", items: course.materials.map((material) => ({ id: `material-${material.id}`, kind: "material", name: material.name, meta: material.meta })) },
+              { label: "学习记录", items: course.records.map((record) => ({ id: `record-${record.id}`, kind: "record", name: record.name, meta: record.meta })) },
+              { label: "学习成果", items: course.results.map((result) => ({ id: `result-${result.id}`, kind: "result", name: result.name, meta: result.meta })) }
+            ]
+          }));
+      }
+
+      function renderNotes() {
+        const query = byId("noteSearch").value.trim().toLowerCase();
+        const list = byId("noteChoices");
+        const course = state.contentCourseId ? studySpaces[state.contentCourseId] : null;
+        const back = byId("notesBack");
+        const search = byId("noteSearch");
+        const copy = byId("notesCopy");
+        const sectionTitle = byId("notesSectionTitle");
+        list.innerHTML = "";
+        if (!course) {
+          back.classList.add("hidden");
+          search.classList.add("hidden");
+          copy.textContent = "先选择一门课程，再决定引用哪些资料、学习记录或学习成果。";
+          sectionTitle.textContent = "课程";
+          courseValues()
+            .filter((item) => item.id !== "unfiled")
+            .forEach((item) => {
+              const button = document.createElement("button");
+              button.className = "choice-item";
+              button.innerHTML = `<span><strong>▱ ${item.name}</strong><span class="choice-meta">${item.materials.length} 份资料 · ${item.records.length} 条记录 · ${item.results.length} 项成果</span></span><span>›</span>`;
+              button.addEventListener("click", () => {
+                state.contentCourseId = item.id;
+                byId("noteSearch").value = "";
+                renderNotes();
+              });
+              list.appendChild(button);
+            });
+          return;
+        }
+
+        back.classList.remove("hidden");
+        search.classList.remove("hidden");
+        copy.textContent = `从「${course.name}」中选择本次要引用的内容。`;
+        sectionTitle.textContent = course.name;
+        const courseData = libraryOptions().find((item) => item.course.id === course.id);
+        courseData.groups
+          .map((group) => ({
+            ...group,
+            items: group.items.filter((item) => `${group.label} ${item.name} ${item.meta}`.toLowerCase().includes(query))
+          }))
+          .filter((group) => group.items.length)
+          .forEach((group) => {
+            const section = document.createElement("section");
+            section.className = "content-course-group";
+            section.innerHTML = `<div class="content-type-label">${group.label}</div>`;
+            group.items.forEach((content) => {
+              const item = document.createElement("button");
+              item.className = "choice-item" + (state.contentSelection.has(content.id) ? " checked" : "");
+              item.innerHTML = `<span><strong>${iconFor(content.kind)} ${content.name}</strong><span class="choice-meta">${content.meta}</span></span><span class="checkmark">✓</span>`;
+              item.addEventListener("click", () => {
+                state.contentSelection.has(content.id) ? state.contentSelection.delete(content.id) : state.contentSelection.add(content.id);
+                renderNotes();
+              });
+              section.appendChild(item);
+            });
+            list.appendChild(section);
+          });
+      }
+
+      function renderCourses() {
+        const list = byId("courseChoices");
+        list.innerHTML = "";
+        courseValues().forEach((course) => {
+          const item = document.createElement("button");
+          item.className = "choice-item" + (state.courseSelection === course.id ? " checked" : "");
+          item.innerHTML = `<span>${course.name}</span><span class="checkmark">✓</span>`;
+          item.addEventListener("click", () => {
+            state.courseSelection = course.id;
+            byId("newCourseName").value = "";
+            renderCourses();
+          });
+          list.appendChild(item);
+        });
+      }
+
+      function createTaskTitle() {
+        const firstLine = mainPrompt.value.trim().split(/[。？！\n]/)[0];
+        if (state.selectedTask) return state.selectedTask;
+        return firstLine ? firstLine.slice(0, 22) : "新的学习记录";
+      }
+
+      function ensureLearningRecord() {
+        if (state.currentRecord) return state.currentRecord;
+        const course = currentCourse();
+        const record = {
+          id: `record-${Date.now()}`,
+          name: createTaskTitle(),
+          meta: `学习记录 · 今天 · ${allContextItems().length ? `${allContextItems().length} 项上下文` : "无附加资料"}`,
+          prompt: mainPrompt.value.trim() || "帮我开始这次学习任务。",
+          assistant: "我已根据本次学习资料和问题完成初步整理。",
+          context: allContextItems().map((item) => ({ kind: item.kind, id: item.id, name: item.label, meta: item.meta }))
+        };
+        course.records.unshift(record);
+        state.currentRecord = record;
+        renderSidebarRecords();
+        renderCourseSpace();
+        return record;
+      }
+
+      function recordResult(name, kind, meta, recordId = state.currentRecord && state.currentRecord.id) {
+        const course = currentCourse();
+        if (!course.results.some((result) => result.name === name && result.recordId === recordId)) {
+          course.results.unshift({ id: `result-${Date.now()}-${name}`, name, kind, meta, recordId });
+        }
+        renderCourseSpace();
+      }
+
+      function generateWorkspaceSummary() {
+        const isSeminar = /Seminar|Tutorial|讨论/.test(mainPrompt.value) || state.selectedTask === "准备 Seminar / Tutorial";
+        const record = ensureLearningRecord();
+        const title = isSeminar ? "Seminar 准备卡" : state.selectedTask || "学习整理";
+        state.currentResult = title;
+        record.assistant = isSeminar
+          ? "我已根据本次上下文整理了讨论准备卡：核心观点、可提出的问题与回应方式。"
+          : "我已根据本次上下文整理出核心概念、内容结构和下一步建议。";
+        return {
+          title,
+          kicker: currentCourse().name,
+          sections: isSeminar
+            ? [
+                ["核心观点", "市场并不是独立于社会关系运作的机制。资料围绕效率、分配与制度如何共同影响资源流动展开。"],
+                ["可以提出的问题", ["效率提升是否必然改善所有人的福利？", "政策介入如何在公平与效率之间取得平衡？", "资料中的案例能否适用于其他社会背景？"]],
+                ["讨论时可用的回应", "先承认对方的前提，再回到资料中的具体论据和概念定义。"]
+              ]
+            : [
+                ["学习概览", "已根据本次资料整理出核心概念、内容结构和下一步建议。"],
+                ["重点理解", ["先区分关键概念的定义与适用条件", "将例子与理论主张对应起来", "记录仍需要追问的部分"]],
+                ["下一步", "可以继续生成脑图、闪卡或一组测验题，验证自己是否真正掌握。"]
+              ]
+        };
+      }
+
+      function artifactMarkup(artifact) {
+        return `
+          <article class="artifact">
+            <div class="artifact-top">
+              <div>
+                <div class="artifact-kicker">${artifact.kicker}</div>
+                <h2>${artifact.title}</h2>
+              </div>
+              <div>
+                <button class="text-button" id="saveAsResult">保存为学习成果</button>
+                <button class="text-button" id="artifactExport">导出</button>
+              </div>
+            </div>
+            ${artifact.sections
+              .map(([heading, content]) => {
+                const body = Array.isArray(content) ? `<ul>${content.map((item) => `<li>${item}</li>`).join("")}</ul>` : `<p>${content}</p>`;
+                return `<section class="artifact-section"><h3>${heading}</h3>${body}</section>`;
+              })
+              .join("")}
+          </article>
+          <div class="generated-list" id="generatedList"></div>
+        `;
+      }
+
+      function renderSources() {
+        const list = byId("sourceList");
+        const sources = allContextItems();
+        byId("sourceCount").textContent = `${sources.length} 项上下文`;
+        list.innerHTML = sources.length
+          ? sources
+              .map((item) => {
+                const type = item.kind === "recording" ? "课堂录音" : item.kind === "course" ? "课程资料库" : item.kind === "record" ? "学习记录" : item.kind === "result" ? "学习成果" : "学习资料";
+                return `<div class="source-item"><span class="source-icon">${iconFor(item.kind)}</span><div class="source-content"><div class="source-name">${item.label}</div><div class="source-meta">${type} · ${item.meta || "已添加"}</div></div></div>`;
+              })
+              .join("")
+          : `<div class="source-item"><div class="source-content"><div class="source-meta">还没有添加学习上下文</div></div></div>`;
+      }
+
+      function resultDetailMarkup(result, record) {
+        const source = record ? `来自学习记录「${record.name}」` : "课程学习成果";
+        if (result.kind === "quiz") {
+          return `
+            <article class="artifact">
+              <div class="artifact-top"><div><div class="artifact-kicker">${source}</div><h2>${result.name}</h2></div><button class="text-button" id="artifactExport">导出</button></div>
+              <section class="artifact-section"><h3>第 1 题</h3><p>在完全竞争市场中，单个企业面对的需求曲线通常是什么形态？</p></section>
+              <div class="generated-list">
+                <button class="generated-item quiz-option" data-quiz-choice="A"><span>A. 向下倾斜</span><span></span></button>
+                <button class="generated-item quiz-option" data-quiz-choice="B"><span>B. 水平</span><span></span></button>
+                <button class="generated-item quiz-option" data-quiz-choice="C"><span>C. 向上倾斜</span><span></span></button>
+              </div>
+              <div class="artifact-section" id="quizFeedback"><p>选择一个答案后查看解析。</p></div>
+            </article>
+          `;
+        }
+        if (result.kind === "flashcard") {
+          return `
+            <article class="artifact">
+              <div class="artifact-top"><div><div class="artifact-kicker">${source}</div><h2>${result.name}</h2></div><button class="text-button" id="artifactExport">导出</button></div>
+              <section class="artifact-section"><h3>闪卡 1 / 20</h3><p id="flashcardText">什么是价格接受者（price taker）？</p></section>
+              <div class="generated-list"><button class="generated-item" id="flipFlashcard"><span>查看答案</span><span>翻转</span></button></div>
+            </article>
+          `;
+        }
+        const heading = result.kind === "mindmap" ? "知识结构" : result.kind === "guide" ? "学习路径" : "笔记内容";
+        const body = result.kind === "mindmap"
+          ? ["市场结构", "完全竞争：价格接受者", "垄断：进入壁垒与定价能力", "寡头：策略互动"]
+          : result.kind === "guide"
+            ? ["先明确核心概念和适用条件", "对照案例或题目判断差异", "用测验检查易混点"]
+            : ["已保存本次对话中的核心梳理，可在下一次任务中作为上下文引用。"];
+        return `
+          <article class="artifact">
+            <div class="artifact-top"><div><div class="artifact-kicker">${source}</div><h2>${result.name}</h2></div><button class="text-button" id="artifactExport">导出</button></div>
+            <section class="artifact-section"><h3>${heading}</h3><ul>${body.map((line) => `<li>${line}</li>`).join("")}</ul></section>
+          </article>
+        `;
+      }
+
+      function bindOpenedResultInteractions() {
+        byId("artifactExport")?.addEventListener("click", () => openModal("exportModal"));
+        byId("flipFlashcard")?.addEventListener("click", () => {
+          byId("flashcardText").textContent = "企业无法自行影响市场价格，只能按既定价格出售产品。";
+        });
+        document.querySelectorAll("[data-quiz-choice]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const correct = button.dataset.quizChoice === "B";
+            byId("quizFeedback").innerHTML = `<p>${correct ? "回答正确。" : "这题不正确。"} 完全竞争下，单个企业不能影响市场价格，因此面对水平需求曲线。</p>`;
+            if (state.openingResult) state.openingResult.meta = `测验 · 最近完成 1 / 1 · ${correct ? "正确" : "待复习"}`;
+            renderCourseSpace();
+          });
+        });
+      }
+
+      function openLearningRecord(course, recordId) {
+        const record = course.records.find((item) => item.id === recordId);
+        if (!record) return;
+        state.courseId = course.id;
+        state.currentRecord = record;
+        state.files = [];
+        state.recording = null;
+        state.contents = (record.context || []).map((item) => ({ id: item.id, kind: item.kind, name: item.name, meta: item.meta }));
+        state.recordingMode = false;
+        state.reopeningRecord = true;
+        state.openingResult = null;
+        state.currentResult = record.name;
+        mainPrompt.value = record.prompt || record.name;
+        byId("homeApp").classList.add("hidden");
+        byId("workspace").classList.add("visible");
+        renderWorkspace();
+      }
+
+      function openLearningResult(course, resultId) {
+        const result = course.results.find((item) => item.id === resultId);
+        if (!result) return;
+        const record = course.records.find((item) => item.id === result.recordId) || course.records[0];
+        state.courseId = course.id;
+        state.currentRecord = record || { id: "saved-result", name: result.name, meta: "学习记录" };
+        state.files = [];
+        state.recording = null;
+        state.contents = (record?.context || []).map((item) => ({ id: item.id, kind: item.kind, name: item.name, meta: item.meta }));
+        state.recordingMode = false;
+        state.reopeningRecord = true;
+        state.openingResult = result;
+        state.currentResult = result.name;
+        mainPrompt.value = record?.prompt || result.name;
+        byId("homeApp").classList.add("hidden");
+        byId("workspace").classList.add("visible");
+        renderWorkspace();
+      }
+
+      function renderWorkspace() {
+        renderSources();
+        const record = state.currentRecord || ensureLearningRecord();
+        byId("noteTitle").textContent = record.name;
+        const isRecording = state.recordingMode;
+        byId("finishRecordingButton").classList.toggle("hidden", !isRecording);
+        byId("agentStatus").textContent = isRecording ? "录音中" : "正在解析";
+        const conversation = byId("conversation");
+        if (isRecording) {
+          conversation.innerHTML = `
+            <div class="message"><div class="message-label">你</div><div class="user-message">${mainPrompt.value.trim() || "请记录这次课堂，并在结束后帮我整理要点。"}</div></div>
+            <div class="message"><div class="message-label">Capsu.ai</div><div class="agent-message"><div class="record-state"><span class="record-dot"></span><span>正在记录课堂内容。结束后会生成转写、术语和课堂整理。</span></div></div></div>
+          `;
+          byId("studioContent").innerHTML = `<div class="artifact"><div class="artifact-kicker">课堂学习记录</div><h2>等待录音结束后整理</h2></div>`;
+          return;
+        }
+
+        if (state.reopeningRecord) {
+          conversation.innerHTML = `
+            <div class="message"><div class="message-label">你</div><div class="user-message">${record.prompt || record.name}</div></div>
+            <div class="message"><div class="message-label">Capsu.ai</div><div class="agent-message">${record.assistant || "这次学习记录已保留，可以继续追问或生成新的学习工具。"}</div></div>
+          `;
+          byId("agentStatus").textContent = "已完成";
+          if (state.openingResult) {
+            byId("studioContent").innerHTML = resultDetailMarkup(state.openingResult, record);
+            bindOpenedResultInteractions();
+          } else {
+            byId("studioContent").innerHTML = artifactMarkup({
+              kicker: "学习记录",
+              title: record.name,
+              sections: [["本次整理", record.assistant || "这次学习记录已保留，可以继续追问或生成新的学习工具。"]]
+            });
+            bindArtifactExport();
+            bindSaveResult();
+          }
+          return;
+        }
+
+        const sourceText = allContextItems().length ? `已加入 ${allContextItems().length} 项本次学习上下文。` : "这次任务暂未添加资料。";
+        conversation.innerHTML = `
+          <div class="message"><div class="message-label">你</div><div class="user-message">${mainPrompt.value.trim() || "帮我开始这次学习任务。"}</div></div>
+          <div class="message"><div class="message-label">Capsu.ai</div><div class="agent-message"><div class="progress-row"><span class="spinner"></span><span id="progressText">正在读取资料并组织本次任务</span></div><div id="agentResult" class="hidden"></div></div></div>
+        `;
+        byId("studioContent").innerHTML = `<div class="artifact"><div class="artifact-kicker">正在生成</div><h2>准备本次学习成果</h2></div>`;
+        window.setTimeout(() => {
+          const progress = byId("progressText");
+          if (!progress) return;
+          const artifact = generateWorkspaceSummary();
+          progress.parentElement.remove();
+          byId("agentResult").classList.remove("hidden");
+          byId("agentResult").innerHTML = `${sourceText}<br><br>本次对话已保存在「${currentCourse().name}」的学习记录中。右侧可继续生成脑图、闪卡或测验；也可将当前整理保存为学习成果。`;
+          byId("agentStatus").textContent = "已完成";
+          byId("studioContent").innerHTML = artifactMarkup(artifact);
+          bindArtifactExport();
+          bindSaveResult();
+        }, 900);
+      }
+
+      function bindArtifactExport() {
+        const button = byId("artifactExport");
+        if (button) button.addEventListener("click", () => openModal("exportModal"));
+      }
+
+      function bindSaveResult() {
+        const button = byId("saveAsResult");
+        if (!button) return;
+        button.addEventListener("click", () => {
+          byId("resultName").value = state.currentResult || state.currentRecord.name;
+          openModal("saveResultModal");
+        });
+      }
+
+      function startTask() {
+        if (!mainPrompt.value.trim() && allContextItems().length === 0) {
+          mainPrompt.focus();
+          showToast("输入一个学习问题，或先添加学习资料。");
+          return;
+        }
+        ensureLearningRecord();
+        byId("homeApp").classList.add("hidden");
+        byId("workspace").classList.add("visible");
+        renderWorkspace();
+      }
+
+      function addGeneratedTool(tool) {
+        const labels = { mindmap: "知识脑图", flashcard: "闪卡组", quiz: "练习测验" };
+        const list = byId("generatedList");
+        if (!list) return;
+        const label = labels[tool];
+        const item = document.createElement("div");
+        item.className = "generated-item";
+        item.innerHTML = `<span>${label}</span><span>已保存到学习成果</span>`;
+        list.prepend(item);
+        state.generatedTools.unshift({ tool, label });
+        recordResult(label, tool, `${tool === "quiz" ? "测验" : tool === "mindmap" ? "脑图" : "闪卡"} · 来自「${state.currentRecord.name}」`);
+        showToast(`${label} 已保存到课程学习成果。`);
+      }
+
+      function courseItemMarkup(item, kind) {
+        const icon = kind === "material" ? "▤" : kind === "record" ? "□" : "✦";
+        const trailing = kind === "material" ? "学习资料" : kind === "record" ? "打开对话" : "打开成果";
+        const data = kind === "material" ? "" : `data-open-${kind}="${item.id}"`;
+        const tag = kind === "material" ? "div" : "button";
+        return `
+          <${tag} class="course-list-item" ${data}>
+            <div class="course-list-leading">
+              <span class="course-file-icon">${icon}</span>
+              <div><div class="course-item-name">${item.name}</div><div class="course-item-meta">${item.meta}</div></div>
+            </div>
+            <span class="${kind === "material" ? "course-item-trailing" : "course-item-open"}">${trailing}</span>
+          </${tag}>
+        `;
+      }
+
+      function courseBranchMarkup(title, note, items, kind) {
+        const body = items.length
+          ? `<div class="course-list">${items.map((item) => courseItemMarkup(item, kind)).join("")}</div>`
+          : `<div class="course-empty">还没有${title}。</div>`;
+        return `
+          <section class="course-branch">
+            <div class="course-branch-head">
+              <div><div class="course-branch-title">${title}</div><p class="course-branch-note">${note}</p></div>
+              <span class="course-branch-count">${items.length} 项</span>
+            </div>
+            ${body}
+          </section>
+        `;
+      }
+
+      function bindCourseOpeners(course) {
+        document.querySelectorAll("[data-open-record]").forEach((button) => {
+          button.addEventListener("click", () => openLearningRecord(course, button.dataset.openRecord));
+        });
+        document.querySelectorAll("[data-open-result]").forEach((button) => {
+          button.addEventListener("click", () => openLearningResult(course, button.dataset.openResult));
+        });
+      }
+
+      function renderCourseDetail(course) {
+        byId("courseSpaceTitle").textContent = course.name;
+        byId("courseSpaceSubtitle").textContent = "学习资料提供上下文；每次 AI 对话保留为学习记录；工具结果和确认保存的笔记沉淀为学习成果。";
+        byId("courseSpaceUpload").classList.remove("hidden");
+        byId("courseOverview").innerHTML = `
+          <div class="course-summary">
+            <div class="course-summary-item"><div class="course-summary-value">${course.materials.length}</div><div class="course-summary-label">学习资料</div></div>
+            <div class="course-summary-item"><div class="course-summary-value">${course.records.length}</div><div class="course-summary-label">学习记录</div></div>
+            <div class="course-summary-item"><div class="course-summary-value">${course.results.length}</div><div class="course-summary-label">学习成果</div></div>
+          </div>
+          ${courseBranchMarkup("学习资料", "PDF、课件和课堂录音等原始内容。", course.materials, "material")}
+          ${courseBranchMarkup("学习记录", "这门课里每次与 AI 的聊天、任务和课堂记录。", course.records, "record")}
+          ${courseBranchMarkup("学习成果", "脑图、闪卡、测验、学习指南，以及主动保存的笔记。", course.results, "result")}
+        `;
+        bindCourseOpeners(course);
+      }
+
+      function renderCourseOverview() {
+        byId("courseSpaceTitle").textContent = "课程总览";
+        byId("courseSpaceSubtitle").textContent = "从课程进入资料、每次学习对话和可反复使用的学习成果。";
+        byId("courseSpaceUpload").classList.add("hidden");
+        const courses = courseValues().filter((course) => course.id !== "unfiled");
+        byId("courseOverview").innerHTML = courses
+          .map(
+            (course) => `
+              <button class="course-overview-row" data-open-course="${course.id}">
+                <div><div class="course-branch-title">${course.name}</div><p class="course-branch-note">学习资料 ${course.materials.length} 项 · 学习记录 ${course.records.length} 条 · 学习成果 ${course.results.length} 项</p></div>
+                <span class="course-overview-arrow">›</span>
+              </button>
+            `
+          )
+          .join("");
+        document.querySelectorAll("[data-open-course]").forEach((button) => button.addEventListener("click", () => showCourseSpace(button.dataset.openCourse)));
+      }
+
+      function renderCourseSpace() {
+        if (state.courseView === "overview") {
+          renderCourseOverview();
+          return;
+        }
+        const course = activeCourse();
+        if (course) renderCourseDetail(course);
+      }
+
+      function showCourseSpace(courseId) {
+        state.activeCourseId = courseId;
+        state.courseView = "detail";
+        document.querySelector(".home").classList.add("hidden");
+        byId("courseSpace").classList.add("visible");
+        setActiveNavigation("courses");
+        renderSidebarRecords();
+        renderCourseSpace();
+      }
+
+      function showCourseOverview() {
+        state.courseView = "overview";
+        document.querySelector(".home").classList.add("hidden");
+        byId("courseSpace").classList.add("visible");
+        setActiveNavigation("courses");
+        renderSidebarRecords();
+        renderCourseSpace();
+      }
+
+      function hideCourseSpace() {
+        byId("courseSpace").classList.remove("visible");
+        document.querySelector(".home").classList.remove("hidden");
+        setActiveNavigation("home");
+      }
+
+      function prepareNewTask() {
+        state.selectedTask = null;
+        state.files = [];
+        state.contents = [];
+        state.recording = null;
+        state.recordingMode = false;
+        state.currentRecord = null;
+        state.reopeningRecord = false;
+        state.openingResult = null;
+        state.generatedTools = [];
+        mainPrompt.value = "";
+        renderScene();
+        renderContext();
+        mainPrompt.focus();
+      }
+
+      function openNotesPicker() {
+        state.contentCourseId = null;
+        state.contentSelection.clear();
+        byId("noteSearch").value = "";
+        renderNotes();
+        openModal("notesModal");
+      }
+
+      byId("sceneTabs").addEventListener("click", (event) => {
+        const tab = event.target.closest("[data-scene]");
+        if (!tab) return;
+        state.scene = tab.dataset.scene;
+        state.selectedTask = null;
+        renderScene();
+      });
+
+      byId("uploadButton").addEventListener("click", () => {
+        renderSampleFiles();
+        openModal("uploadModal");
+      });
+      byId("workspaceUpload").addEventListener("click", () => {
+        renderSampleFiles();
+        openModal("uploadModal");
+      });
+      byId("courseSpaceUpload").addEventListener("click", () => {
+        state.courseId = state.activeCourseId;
+        updateCourseName();
+        renderSampleFiles();
+        openModal("uploadModal");
+      });
+
+      byId("recordButton").addEventListener("click", () => openModal("recordModal"));
+      byId("noteButton").addEventListener("click", openNotesPicker);
+      byId("workspaceNote").addEventListener("click", openNotesPicker);
+
+      byId("courseButton").addEventListener("click", () => {
+        state.courseSelection = state.courseId;
+        renderCourses();
+        openModal("courseModal");
+      });
+
+      byId("homeNav").addEventListener("click", hideCourseSpace);
+      byId("backToHome").addEventListener("click", hideCourseSpace);
+      byId("coursesNav").addEventListener("click", showCourseOverview);
+      byId("sendButton").addEventListener("click", startTask);
+      byId("capsuNoticeClose").addEventListener("click", () => byId("capsuNoticeStage").remove());
+      byId("capsuNoticeAction").addEventListener("click", () => byId("capsuNoticeStage").remove());
+      byId("accountButton").addEventListener("click", () => {
+        state.accountMenuOpen = !state.accountMenuOpen;
+        renderAccountMenu();
+      });
+      byId("addWeComButton").addEventListener("click", (event) => {
+        event.stopPropagation();
+        showToast("企业微信添加入口已打开。");
+      });
+      document.addEventListener("click", (event) => {
+        if (!state.accountMenuOpen || byId("sidebarAccountZone").contains(event.target)) return;
+        state.accountMenuOpen = false;
+        renderAccountMenu();
+      });
+
+      document.querySelectorAll("[data-close]").forEach((button) => {
+        button.addEventListener("click", () => closeModal(button.dataset.close));
+      });
+      document.querySelectorAll(".modal-layer").forEach((layer) => {
+        layer.addEventListener("click", (event) => {
+          if (event.target === layer) closeModal(layer.id);
+        });
+      });
+
+      byId("fileInput").addEventListener("change", (event) => {
+        [...event.target.files].forEach((file) => {
+          addFileToTask({
+            id: `local-${Date.now()}-${file.name}`,
+            name: file.name,
+            meta: file.type.startsWith("audio") ? "音频 · 本地文件" : "PDF · 本地文件"
+          });
+        });
+        renderContext();
+      });
+
+      byId("addFilesButton").addEventListener("click", () => {
+        sampleFiles.filter((file) => state.sampleSelection.has(file.id)).forEach(addFileToTask);
+        state.sampleSelection.clear();
+        renderContext();
+        closeModal("uploadModal");
+        showToast(`资料已加入「${currentCourse().name}」的学习资料，并作为本次任务的上下文。`);
+      });
+
+      byId("startRecordingButton").addEventListener("click", () => {
+        const name = byId("recordName").value.trim() || "课堂录音";
+        const course = currentCourse();
+        const record = {
+          id: `recording-${Date.now()}`,
+          name,
+          meta: "课堂学习记录 · 正在录音",
+          prompt: "请记录这次课堂，并在结束后帮我整理要点、术语和需要回顾的内容。",
+          assistant: "课堂录音正在进行。结束后会保留转写、术语和课堂整理。",
+          context: []
+        };
+        state.recording = { id: record.id, name, meta: "实时转写已开启" };
+        state.recordingMode = true;
+        state.currentRecord = record;
+        course.records.unshift(record);
+        state.selectedTask = "课堂录音";
+        if (!mainPrompt.value.trim()) mainPrompt.value = "请记录这次课堂，并在结束后帮我整理要点、术语和需要回顾的内容。";
+        renderContext();
+        renderSidebarRecords();
+        renderCourseSpace();
+        closeModal("recordModal");
+        byId("homeApp").classList.add("hidden");
+        byId("workspace").classList.add("visible");
+        renderWorkspace();
+      });
+
+      byId("finishRecordingButton").addEventListener("click", () => {
+        state.recordingMode = false;
+        state.recording.meta = "转写已保存";
+        state.currentRecord.meta = "课堂学习记录 · 已转写 · 今天";
+        renderSidebarRecords();
+        renderCourseSpace();
+        renderWorkspace();
+      });
+
+      byId("noteSearch").addEventListener("input", renderNotes);
+      byId("notesBack").addEventListener("click", () => {
+        state.contentCourseId = null;
+        byId("noteSearch").value = "";
+        renderNotes();
+      });
+      byId("addNotesButton").addEventListener("click", () => {
+        libraryOptions()
+          .flatMap(({ groups }) => groups.flatMap((group) => group.items))
+          .filter((content) => state.contentSelection.has(content.id))
+          .forEach((content) => {
+            if (!state.contents.some((item) => item.id === content.id)) state.contents.push(content);
+          });
+        state.contentSelection.clear();
+        renderContext();
+        closeModal("notesModal");
+        showToast("已有学习内容已添加为本次任务的上下文。");
+      });
+
+      byId("saveCourseButton").addEventListener("click", () => {
+        const customCourse = byId("newCourseName").value.trim();
+        if (customCourse) {
+          const existing = courseValues().find((course) => course.name === customCourse);
+          const id = existing ? existing.id : `course-${Date.now()}`;
+          if (!existing) studySpaces[id] = { id, name: customCourse, materials: [], records: [], results: [] };
+          state.courseId = id;
+          state.activeCourseId = id;
+        } else {
+          state.courseId = state.courseSelection;
+          state.activeCourseId = state.courseSelection;
+        }
+        updateCourseName();
+        renderSidebarRecords();
+        renderCourseSpace();
+        closeModal("courseModal");
+      });
+
+      byId("backHome").addEventListener("click", () => {
+        byId("workspace").classList.remove("visible");
+        byId("homeApp").classList.remove("hidden");
+        byId("courseSpace").classList.remove("visible");
+        setActiveNavigation("home");
+      });
+
+      byId("followUpSend").addEventListener("click", () => {
+        const followUp = byId("followUpPrompt");
+        if (!followUp.value.trim()) return;
+        const conversation = byId("conversation");
+        conversation.insertAdjacentHTML(
+          "beforeend",
+          `<div class="message"><div class="message-label">你</div><div class="user-message">${followUp.value.trim()}</div></div><div class="message"><div class="message-label">Capsu.ai</div><div class="agent-message">我已根据这次学习记录和已选上下文继续调整。新的内容会保留在当前学习记录中。</div></div>`
+        );
+        followUp.value = "";
+        conversation.scrollTop = conversation.scrollHeight;
+      });
+
+      byId("saveResultButton").addEventListener("click", () => {
+        const name = byId("resultName").value.trim() || state.currentResult || state.currentRecord.name;
+        const record = ensureLearningRecord();
+        recordResult(name, "note", `已保存笔记 · 来自「${record.name}」`, record.id);
+        closeModal("saveResultModal");
+        showToast(`「${name}」已保存到「${currentCourse().name}」的学习成果。`);
+      });
+
+      document.querySelectorAll("[data-tool]").forEach((button) => button.addEventListener("click", () => addGeneratedTool(button.dataset.tool)));
+      byId("exportButton").addEventListener("click", () => openModal("exportModal"));
+      document.querySelectorAll("[data-export]").forEach((button) => {
+        button.addEventListener("click", () => {
+          closeModal("exportModal");
+          showToast(`${state.currentResult} 已开始导出为 ${button.dataset.export}。`);
+        });
+      });
+
+      renderScene();
+      renderContext();
+      renderSampleFiles();
+      renderNotes();
+      renderCourses();
+      renderSidebarRecords();
+      renderCourseSpace();
+      updateCourseName();
+      renderAccountMenu();
+    </script>
+  </body>
+</html>
