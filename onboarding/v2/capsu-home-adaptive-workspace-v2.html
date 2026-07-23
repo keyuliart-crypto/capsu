@@ -1,0 +1,2862 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>这节课哪里没跟上？ | Capsu.ai</title>
+  <link rel="icon" href="data:,">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.js"></script>
+  <style>
+    :root {
+      --primary: #2878e8;
+      --primary-hover: #1769d7;
+      --text-main: #252525;
+      --text-secondary: #6f706a;
+      --text-meta: #8b8c86;
+      --page: #fbfaf8;
+      --sidebar: #fff;
+      --surface: #fff;
+      --hover: #f4f4f1;
+      --border: #e6e5e0;
+      --shadow: 0 14px 40px rgba(24, 33, 46, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-width: 1100px;
+      color: var(--text-main);
+      background: var(--page);
+      font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+      letter-spacing: 0;
+    }
+
+    button {
+      color: inherit;
+      font: inherit;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 10;
+      display: flex;
+      width: 255px;
+      flex-direction: column;
+      background: var(--sidebar);
+      border-right: 1px solid var(--border);
+    }
+
+    .brand-row {
+      display: flex;
+      height: 66px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+
+    .brand {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+    }
+
+    .brand span {
+      color: var(--primary);
+    }
+
+    .icon-button {
+      display: inline-flex;
+      width: 32px;
+      height: 32px;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      color: #77786f;
+      background: transparent;
+      border: 0;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .icon-button:hover {
+      background: var(--hover);
+    }
+
+    .nav-scroll {
+      flex: 1;
+      overflow: auto;
+      padding: 4px 12px 16px;
+    }
+
+    .nav-item,
+    .recent-item,
+    .category-item {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      gap: 12px;
+      border-radius: 8px;
+      color: #55564f;
+    }
+
+    .nav-item {
+      height: 45px;
+      padding: 0 12px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .nav-item.active {
+      color: #2c2d29;
+      background: #f0f0ee;
+    }
+
+    .nav-spacer {
+      height: 18px;
+    }
+
+    .category-item {
+      height: 34px;
+      padding: 0 18px 0 24px;
+      font-size: 14px;
+    }
+
+    .category-child {
+      padding-left: 48px;
+    }
+
+    .sidebar-section-title {
+      margin: 22px 12px 8px;
+      color: var(--text-meta);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .recent-item {
+      height: 38px;
+      padding: 0 12px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .recent-item:hover {
+      background: var(--hover);
+    }
+
+    .recent-item span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .account {
+      display: flex;
+      height: 70px;
+      align-items: center;
+      gap: 10px;
+      padding: 0 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .avatar {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      flex: 0 0 auto;
+      place-items: center;
+      color: var(--primary);
+      background: #eaf2ff;
+      border-radius: 50%;
+      font-weight: 600;
+    }
+
+    .account-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .account-name {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .account-plan {
+      margin-top: 2px;
+      color: var(--text-meta);
+      font-size: 12px;
+    }
+
+    .main {
+      width: calc(100% - 255px);
+      min-height: 100vh;
+      margin-left: 255px;
+      padding: 66px 64px 52px;
+    }
+
+    .home-content {
+      width: 100%;
+      max-width: 1360px;
+      margin: 0 auto;
+    }
+
+    .greeting {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 550;
+      line-height: 1.4;
+    }
+
+    .greeting-caption {
+      margin: 8px 0 0;
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.75fr) minmax(300px, 0.85fr);
+      gap: 38px;
+      align-items: start;
+      margin-top: 36px;
+    }
+
+    .start-column {
+      min-width: 0;
+      padding-right: 4px;
+    }
+
+    .start-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 10px;
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .start-title {
+      max-width: 620px;
+      margin: 0;
+      font-size: 38px;
+      font-weight: 680;
+      line-height: 1.24;
+    }
+
+    .start-intro {
+      max-width: 660px;
+      margin: 13px 0 26px;
+      color: var(--text-secondary);
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    .learning-composer {
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid #deded8;
+      border-radius: 16px;
+      box-shadow: 0 12px 32px rgba(34, 39, 47, 0.06);
+    }
+
+    .composer-main {
+      min-height: 190px;
+      padding: 26px 28px 22px;
+    }
+
+    .composer-label {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 16px;
+      color: #444640;
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .composer-input {
+      width: 100%;
+      min-height: 76px;
+      resize: none;
+      color: var(--text-main);
+      background: transparent;
+      border: 0;
+      outline: 0;
+      font: inherit;
+      font-size: 18px;
+      line-height: 1.65;
+    }
+
+    .composer-input::placeholder {
+      color: #a0a19b;
+    }
+
+    .prompt-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .prompt-chip {
+      height: 34px;
+      padding: 0 13px;
+      color: #585a54;
+      background: #f6f6f3;
+      border: 1px solid #ecebe6;
+      border-radius: 17px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .prompt-chip:hover {
+      color: var(--primary);
+      background: #f3f7fd;
+      border-color: #cddff8;
+    }
+
+    .composer-footer {
+      display: flex;
+      min-height: 74px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 14px 18px 14px 22px;
+      background: #fafaf8;
+      border-top: 1px solid #e9e8e3;
+    }
+
+    .context-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .context-action {
+      display: inline-flex;
+      height: 36px;
+      align-items: center;
+      gap: 7px;
+      padding: 0 10px;
+      color: #5e6059;
+      background: transparent;
+      border: 0;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .context-action:hover {
+      color: #333530;
+      background: #eeeeeb;
+    }
+
+    .send-button {
+      display: inline-flex;
+      width: 42px;
+      height: 42px;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      background: var(--primary);
+      border: 0;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .send-button:hover {
+      background: var(--primary-hover);
+    }
+
+    .start-card:focus-visible,
+    .prompt-chip:focus-visible,
+    .context-action:focus-visible,
+    .send-button:focus-visible,
+    .task-option:focus-visible,
+    .primary-button:focus-visible,
+    .secondary-button:focus-visible {
+      outline: 3px solid rgba(40, 120, 232, 0.25);
+      outline-offset: 3px;
+    }
+
+    .continue-column {
+      min-width: 0;
+      padding: 3px 0 0 30px;
+      border-left: 1px solid var(--border);
+    }
+
+    .recent-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 0 17px;
+    }
+
+    .recent-heading h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 650;
+    }
+
+    .view-all {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .recent-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .note-card {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr) 18px;
+      min-height: 76px;
+      min-width: 0;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 13px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    }
+
+    .note-card:hover {
+      border-color: #d5d5cf;
+      box-shadow: 0 8px 20px rgba(32, 35, 40, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .note-icon {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      color: var(--primary);
+      background: #edf4fe;
+      border-radius: 8px;
+    }
+
+    .note-arrow {
+      color: #aaaba5;
+    }
+
+    .note-title {
+      display: -webkit-box;
+      overflow: hidden;
+      margin: 0;
+      color: var(--text-main);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.45;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+
+    .note-date {
+      margin: 4px 0 0;
+      color: var(--text-meta);
+      font-size: 12px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(25, 28, 33, 0.32);
+      backdrop-filter: blur(2px);
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .dialog {
+      position: relative;
+      width: min(560px, calc(100vw - 48px));
+      padding: 28px;
+      background: #fff;
+      border: 1px solid rgba(220, 220, 216, 0.9);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .dialog-close {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+    }
+
+    .dialog h2 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 650;
+    }
+
+    .dialog-intro {
+      margin: 8px 0 22px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .task-options {
+      display: grid;
+      gap: 10px;
+    }
+
+    .task-option {
+      display: grid;
+      grid-template-columns: 42px 1fr 22px;
+      gap: 13px;
+      align-items: center;
+      width: 100%;
+      padding: 16px;
+      text-align: left;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: border-color 150ms ease, background 150ms ease;
+    }
+
+    .task-option:hover,
+    .task-option.selected {
+      background: #f5f9ff;
+      border-color: #8db8f5;
+    }
+
+    .task-icon {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      color: var(--primary);
+      background: #eaf2ff;
+      border-radius: 9px;
+    }
+
+    .task-option strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 15px;
+      font-weight: 650;
+    }
+
+    .task-option small {
+      display: block;
+      color: var(--text-secondary);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .task-arrow {
+      color: var(--text-meta);
+    }
+
+    .dialog-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .secondary-button {
+      padding: 8px 0;
+      color: var(--primary);
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+    }
+
+    .primary-button {
+      height: 40px;
+      padding: 0 20px;
+      color: #fff;
+      background: var(--primary);
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .primary-button:disabled {
+      color: #a4a5a0;
+      background: #ededeb;
+      cursor: not-allowed;
+    }
+
+    .upload-state {
+      display: none;
+    }
+
+    .upload-state.active {
+      display: block;
+    }
+
+    .choice-state.hidden {
+      display: none;
+    }
+
+    .selected-task {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 16px 0;
+      color: #315f9e;
+      font-size: 13px;
+      font-weight: 550;
+    }
+
+    .upload-zone {
+      display: grid;
+      min-height: 190px;
+      place-items: center;
+      padding: 24px;
+      text-align: center;
+      background: #fafafa;
+      border: 1px dashed #cfd1cc;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .upload-zone:hover {
+      background: #f7faff;
+      border-color: #8db8f5;
+    }
+
+    .upload-zone strong {
+      display: block;
+      margin-top: 12px;
+      font-size: 15px;
+    }
+
+    .upload-zone span {
+      display: block;
+      margin-top: 6px;
+      color: var(--text-meta);
+      font-size: 13px;
+    }
+
+    .file-name {
+      margin-top: 12px;
+      color: var(--primary);
+      font-size: 13px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 120;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 16px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      box-shadow: 0 10px 30px rgba(20, 26, 34, 0.14);
+      font-size: 14px;
+    }
+
+    .toast.show {
+      display: flex;
+    }
+
+    /* Adaptive conversation + workbench prototype */
+    .main {
+      height: 100vh;
+      min-height: 720px;
+      overflow: hidden;
+      padding: 34px 42px 30px;
+    }
+
+    .home-content {
+      height: 100%;
+      max-width: 1460px;
+    }
+
+    .page-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .page-heading .greeting {
+      font-size: 17px;
+    }
+
+    .page-heading .greeting-caption {
+      margin-top: 5px;
+    }
+
+    .status-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--text-meta);
+      font-size: 12px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      background: #43a66b;
+      border-radius: 50%;
+    }
+
+    .adaptive-shell {
+      display: grid;
+      width: min(900px, 100%);
+      height: calc(100% - 68px);
+      margin: 0 auto;
+      background: #fff;
+      border: 1px solid #deded8;
+      border-radius: 14px;
+      box-shadow: 0 14px 38px rgba(27, 34, 43, 0.07);
+      transition: width 300ms cubic-bezier(0.16, 1, 0.3, 1),
+        grid-template-columns 300ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .adaptive-shell.has-workbench {
+      width: 100%;
+      grid-template-columns: minmax(470px, 1.08fr) minmax(390px, 0.92fr);
+    }
+
+    .conversation-panel {
+      display: flex;
+      min-width: 0;
+      min-height: 0;
+      flex-direction: column;
+    }
+
+    .conversation-header {
+      display: flex;
+      height: 62px;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .conversation-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .ai-mark {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      color: #fff;
+      background: var(--primary);
+      border-radius: 9px;
+    }
+
+    .conversation-meta {
+      color: var(--text-meta);
+      font-size: 12px;
+    }
+
+    .chat-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding: 30px 30px 22px;
+    }
+
+    .starter {
+      max-width: 820px;
+      margin: 18px auto 0;
+    }
+
+    .starter.hidden {
+      display: none;
+    }
+
+    .starter h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 30px;
+      font-weight: 680;
+      line-height: 1.28;
+    }
+
+    .starter > p {
+      max-width: 580px;
+      margin: 10px auto 22px;
+      color: var(--text-secondary);
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .initial-input-shell {
+      min-height: 174px;
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid #d9d9d3;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(29, 37, 48, 0.07);
+      transition: border-color 150ms ease, box-shadow 150ms ease, background 150ms ease;
+    }
+
+    .initial-input-shell.dragging {
+      background: #f7faff;
+      border-color: var(--primary);
+      box-shadow: 0 10px 30px rgba(40, 120, 232, 0.12);
+    }
+
+    .initial-input {
+      width: 100%;
+      min-height: 122px;
+      padding: 23px 24px 12px;
+      resize: none;
+      color: var(--text-main);
+      background: transparent;
+      border: 0;
+      outline: 0;
+      font: inherit;
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    .initial-input::placeholder {
+      color: #969892;
+    }
+
+    .initial-input-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 12px 12px 20px;
+    }
+
+    .drop-hint {
+      color: var(--text-meta);
+      font-size: 11px;
+    }
+
+    .initial-start-button {
+      display: inline-flex;
+      height: 38px;
+      align-items: center;
+      gap: 8px;
+      padding: 0 16px;
+      color: #fff;
+      background: var(--primary);
+      border: 0;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .initial-start-button:hover {
+      background: var(--primary-hover);
+    }
+
+    .example-heading {
+      margin: 24px 0 10px;
+      color: #62645e;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .starter-options {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      text-align: left;
+    }
+
+    .starter-option {
+      display: flex;
+      min-height: 146px;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 15px;
+      text-align: left;
+      background: #fafaf8;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      cursor: pointer;
+      transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+    }
+
+    .starter-option:hover {
+      border-color: #b9d0f1;
+      box-shadow: 0 7px 18px rgba(35, 45, 58, 0.07);
+      transform: translateY(-1px);
+    }
+
+    .example-label {
+      margin-bottom: 16px;
+      color: var(--primary);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .starter-option strong {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 13px;
+      font-weight: 650;
+      line-height: 1.45;
+    }
+
+    .starter-option small {
+      display: block;
+      color: var(--text-meta);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .example-result {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      gap: 5px;
+      margin-top: auto;
+      padding-top: 13px;
+      color: #6a6c66;
+      font-size: 10px;
+    }
+
+    .messages {
+      display: grid;
+      gap: 18px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .message {
+      display: flex;
+      gap: 10px;
+      animation: message-in 220ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .message.user {
+      justify-content: flex-end;
+    }
+
+    .message-avatar {
+      display: grid;
+      width: 28px;
+      height: 28px;
+      flex: 0 0 auto;
+      place-items: center;
+      color: var(--primary);
+      background: #edf4fe;
+      border-radius: 8px;
+    }
+
+    .message-bubble {
+      max-width: 82%;
+      padding: 11px 13px;
+      color: #3f413c;
+      background: #f5f5f2;
+      border-radius: 4px 12px 12px 12px;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .message.user .message-bubble {
+      color: #fff;
+      background: var(--primary);
+      border-radius: 12px 4px 12px 12px;
+    }
+
+    .typing {
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+      height: 18px;
+    }
+
+    .typing span {
+      width: 5px;
+      height: 5px;
+      background: #989a94;
+      border-radius: 50%;
+      animation: typing-dot 1s infinite ease-in-out;
+    }
+
+    .typing span:nth-child(2) {
+      animation-delay: 120ms;
+    }
+
+    .typing span:nth-child(3) {
+      animation-delay: 240ms;
+    }
+
+    .chat-composer-wrap {
+      position: relative;
+      flex: 0 0 auto;
+      display: none;
+      padding: 14px 18px 18px;
+      background: #fff;
+      border-top: 1px solid var(--border);
+    }
+
+    .chat-composer-wrap.visible {
+      display: block;
+    }
+
+    .chat-composer {
+      display: flex;
+      min-height: 92px;
+      flex-direction: column;
+      padding: 14px 14px 10px;
+      background: #fbfbf9;
+      border: 1px solid #dcdcd6;
+      border-radius: 12px;
+    }
+
+    .chat-input {
+      width: 100%;
+      min-height: 42px;
+      flex: 1;
+      resize: none;
+      color: var(--text-main);
+      background: transparent;
+      border: 0;
+      outline: 0;
+      font: inherit;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .chat-input::placeholder {
+      color: #9c9d97;
+    }
+
+    .composer-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .send-button {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+    }
+
+    .workbench {
+      display: none;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+      background: #fafaf8;
+      border-left: 1px solid var(--border);
+    }
+
+    .has-workbench .workbench {
+      display: flex;
+      flex-direction: column;
+      animation: workbench-in 260ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .workbench-header {
+      display: flex;
+      height: 62px;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 0 18px 0 20px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .workbench-heading {
+      min-width: 0;
+    }
+
+    .workbench-kicker {
+      margin: 0 0 3px;
+      color: var(--primary);
+      font-size: 10px;
+      font-weight: 650;
+    }
+
+    .workbench-heading h2 {
+      overflow: hidden;
+      margin: 0;
+      font-size: 14px;
+      font-weight: 650;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .workbench-controls {
+      display: flex;
+      gap: 3px;
+    }
+
+    .workbench-body {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding: 20px;
+    }
+
+    .recommendation {
+      margin-bottom: 16px;
+      padding: 13px 14px;
+      color: #4e5358;
+      background: #edf4fe;
+      border: 1px solid #d9e7fa;
+      border-radius: 9px;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .tool-choice-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .tool-choice {
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1fr) 18px;
+      min-height: 70px;
+      align-items: center;
+      gap: 11px;
+      padding: 11px 12px;
+      text-align: left;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      cursor: pointer;
+    }
+
+    .tool-choice:hover {
+      border-color: #aec9ee;
+    }
+
+    .tool-choice-icon {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      color: var(--primary);
+      background: #eef4fc;
+      border-radius: 8px;
+    }
+
+    .tool-choice strong {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 13px;
+    }
+
+    .tool-choice small {
+      display: block;
+      color: var(--text-meta);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .drop-zone {
+      display: grid;
+      min-height: 240px;
+      place-items: center;
+      padding: 28px;
+      text-align: center;
+      background: #fff;
+      border: 1px dashed #bfc2bd;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 150ms ease, border-color 150ms ease;
+    }
+
+    .drop-zone.dragging {
+      background: #f2f7fe;
+      border-color: var(--primary);
+    }
+
+    .drop-zone-icon {
+      display: grid;
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 13px;
+      place-items: center;
+      color: var(--primary);
+      background: #edf4fe;
+      border-radius: 12px;
+    }
+
+    .drop-zone strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .drop-zone p {
+      margin: 7px 0 0;
+      color: var(--text-meta);
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .selected-file {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+    }
+
+    .selected-file.show {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .selected-file-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .selected-file-name {
+      overflow: hidden;
+      font-size: 12px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .selected-file-meta {
+      margin-top: 3px;
+      color: var(--text-meta);
+      font-size: 10px;
+    }
+
+    .workbench-primary {
+      display: flex;
+      width: 100%;
+      height: 40px;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 14px;
+      color: #fff;
+      background: var(--primary);
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .workbench-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .record-card {
+      padding: 24px 20px;
+      text-align: center;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .record-orb {
+      display: grid;
+      width: 72px;
+      height: 72px;
+      margin: 4px auto 15px;
+      place-items: center;
+      color: #e64a4a;
+      background: #fff0f0;
+      border-radius: 50%;
+    }
+
+    .record-card.recording .record-orb {
+      animation: record-pulse 1.5s infinite ease-in-out;
+    }
+
+    .record-time {
+      margin: 0;
+      font-size: 27px;
+      font-variant-numeric: tabular-nums;
+      font-weight: 650;
+    }
+
+    .record-caption {
+      margin: 7px 0 18px;
+      color: var(--text-meta);
+      font-size: 11px;
+    }
+
+    .record-button {
+      display: inline-flex;
+      height: 38px;
+      align-items: center;
+      gap: 8px;
+      padding: 0 17px;
+      color: #fff;
+      background: #e44b4b;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .recording .record-button {
+      background: #393b38;
+    }
+
+    .course-tree {
+      display: grid;
+      gap: 9px;
+    }
+
+    .course-block {
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+    }
+
+    .course-row,
+    .note-row {
+      display: flex;
+      min-height: 46px;
+      align-items: center;
+      gap: 9px;
+      padding: 0 12px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .course-row {
+      font-weight: 650;
+    }
+
+    .note-row {
+      padding-left: 34px;
+      color: #5e605a;
+      border-top: 1px solid #f0f0ed;
+    }
+
+    .course-row:hover,
+    .note-row:hover,
+    .note-row.selected {
+      background: #f3f7fd;
+    }
+
+    .fake-check {
+      display: grid;
+      width: 17px;
+      height: 17px;
+      flex: 0 0 auto;
+      place-items: center;
+      color: transparent;
+      background: #fff;
+      border: 1px solid #c6c8c2;
+      border-radius: 4px;
+    }
+
+    .selected .fake-check {
+      color: #fff;
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .generate-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .generate-option {
+      padding: 13px 8px;
+      text-align: center;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      cursor: pointer;
+    }
+
+    .generate-option.selected {
+      color: var(--primary);
+      background: #f2f7fe;
+      border-color: #a9c8f2;
+    }
+
+    .generate-option strong {
+      display: block;
+      margin-top: 7px;
+      font-size: 11px;
+    }
+
+    .result-stack {
+      display: none;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .result-stack.show {
+      display: grid;
+    }
+
+    .flashcard-preview {
+      padding: 14px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+    }
+
+    .flashcard-preview small {
+      color: var(--primary);
+      font-size: 10px;
+      font-weight: 650;
+    }
+
+    .flashcard-preview p {
+      margin: 7px 0 0;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .adaptive-shell.recording-mode {
+      display: block;
+      width: 100%;
+    }
+
+    .recording-mode > .conversation-panel,
+    .recording-mode > .workbench {
+      display: none;
+    }
+
+    .recording-workspace {
+      display: none;
+      height: 100%;
+      min-height: 0;
+      grid-template-columns: minmax(510px, 1.22fr) minmax(370px, 0.78fr);
+    }
+
+    .recording-mode .recording-workspace {
+      display: grid;
+      animation: message-in 240ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .recording-source,
+    .recording-ai {
+      display: flex;
+      min-width: 0;
+      min-height: 0;
+      flex-direction: column;
+    }
+
+    .recording-source {
+      background: #fbfbf9;
+      border-right: 1px solid var(--border);
+    }
+
+    .recording-page-header,
+    .recording-ai-header {
+      display: flex;
+      height: 62px;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: 12px;
+      padding: 0 18px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .recording-page-heading {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .recording-page-heading strong {
+      display: block;
+      overflow: hidden;
+      font-size: 14px;
+      font-weight: 650;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .recording-page-heading small {
+      display: block;
+      margin-top: 3px;
+      color: var(--text-meta);
+      font-size: 10px;
+    }
+
+    .recording-status {
+      display: inline-flex;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: 6px;
+      color: #667069;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .recording-status-dot {
+      width: 7px;
+      height: 7px;
+      background: #4ca56d;
+      border-radius: 50%;
+    }
+
+    .recording-status.live .recording-status-dot {
+      background: #e25353;
+      animation: record-pulse 1.5s infinite ease-in-out;
+    }
+
+    .recording-source-body {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding: 20px 22px 24px;
+    }
+
+    .audio-console {
+      padding: 17px 18px 15px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .audio-meta-row,
+    .audio-control-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .audio-meta-row {
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .audio-meta-row strong {
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .audio-meta-row span {
+      color: var(--text-meta);
+      font-size: 10px;
+    }
+
+    .audio-play-button {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      flex: 0 0 auto;
+      place-items: center;
+      color: #fff;
+      background: var(--primary);
+      border: 0;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .audio-play-button.live-control {
+      background: #e25353;
+    }
+
+    .audio-progress-wrap {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .audio-progress {
+      position: relative;
+      height: 5px;
+      overflow: hidden;
+      background: #e8e9e5;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .audio-progress-value {
+      width: 28%;
+      height: 100%;
+      background: var(--primary);
+      border-radius: inherit;
+      transition: width 160ms linear;
+    }
+
+    .audio-time-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 7px;
+      color: var(--text-meta);
+      font-size: 10px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .transcript-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 22px 2px 10px;
+    }
+
+    .transcript-heading h2 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .transcript-heading span {
+      color: var(--text-meta);
+      font-size: 10px;
+    }
+
+    .transcript-list {
+      display: grid;
+      gap: 7px;
+    }
+
+    .transcript-row {
+      display: grid;
+      grid-template-columns: 50px minmax(0, 1fr);
+      gap: 12px;
+      padding: 12px 13px;
+      text-align: left;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .transcript-row:hover,
+    .transcript-row.selected {
+      background: #fff;
+      border-color: #d7e4f6;
+    }
+
+    .transcript-time {
+      padding-top: 2px;
+      color: var(--primary);
+      font-size: 10px;
+      font-variant-numeric: tabular-nums;
+      font-weight: 650;
+    }
+
+    .transcript-copy {
+      color: #454842;
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .recording-ai {
+      background: #fff;
+    }
+
+    .recording-ai-header {
+      justify-content: space-between;
+    }
+
+    .recording-ai-title {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .recording-ai-context {
+      color: var(--text-meta);
+      font-size: 10px;
+    }
+
+    .recording-chat-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding: 22px 20px;
+    }
+
+    .recording-messages {
+      display: grid;
+      gap: 16px;
+    }
+
+    .recording-context-note {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      margin: 0 20px 10px;
+      padding: 9px 11px;
+      color: #426086;
+      background: #f1f6fd;
+      border: 1px solid #dce8f8;
+      border-radius: 8px;
+      font-size: 10px;
+    }
+
+    .recording-context-note.visible {
+      display: flex;
+    }
+
+    .recording-composer {
+      flex: 0 0 auto;
+      padding: 0 18px 18px;
+    }
+
+    .recording-composer-box {
+      display: flex;
+      min-height: 84px;
+      flex-direction: column;
+      padding: 12px 12px 9px;
+      background: #fbfbf9;
+      border: 1px solid #dcdcd6;
+      border-radius: 11px;
+    }
+
+    .recording-chat-input {
+      width: 100%;
+      min-height: 40px;
+      flex: 1;
+      resize: none;
+      color: var(--text-main);
+      background: transparent;
+      border: 0;
+      outline: 0;
+      font: inherit;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .recording-composer-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    @keyframes message-in {
+      from {
+        opacity: 0;
+        transform: translateY(7px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes workbench-in {
+      from {
+        opacity: 0;
+        transform: translateX(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes menu-in {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes typing-dot {
+      0%,
+      60%,
+      100% {
+        transform: translateY(0);
+      }
+      30% {
+        transform: translateY(-4px);
+      }
+    }
+
+    @keyframes record-pulse {
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(228, 75, 75, 0.12);
+      }
+      50% {
+        box-shadow: 0 0 0 12px rgba(228, 75, 75, 0);
+      }
+    }
+
+    @media (max-width: 1240px) {
+      .main {
+        padding-right: 26px;
+        padding-left: 26px;
+      }
+
+      .adaptive-shell.has-workbench {
+        grid-template-columns: minmax(440px, 1fr) minmax(350px, 0.82fr);
+      }
+
+      .recording-workspace {
+        grid-template-columns: minmax(470px, 1.1fr) minmax(350px, 0.9fr);
+      }
+
+      .starter-option {
+        min-height: 154px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand-row">
+        <div class="brand">Capsu<span>.ai</span></div>
+        <button class="icon-button" aria-label="收起侧栏" title="收起侧栏">
+          <i data-lucide="panel-left-close" width="20" height="20"></i>
+        </button>
+      </div>
+
+      <div class="nav-scroll">
+        <div class="nav-item">
+          <i data-lucide="search" width="20" height="20"></i>
+          <span>搜索</span>
+        </div>
+        <div class="nav-item active">
+          <i data-lucide="house" width="20" height="20"></i>
+          <span>主页</span>
+        </div>
+
+        <div class="nav-spacer"></div>
+
+        <div class="nav-item">
+          <i data-lucide="library-big" width="19" height="19"></i>
+          <span>全部笔记</span>
+        </div>
+        <div class="nav-item">
+          <i data-lucide="graduation-cap" width="20" height="20"></i>
+          <span>学习主题</span>
+        </div>
+        <div class="category-item">
+          <i data-lucide="book-open" width="18" height="18"></i>
+          <span>计量经济学</span>
+        </div>
+        <div class="category-item category-child">
+          <i data-lucide="notebook-pen" width="17" height="17"></i>
+          <span>Week 3 · 回归模型</span>
+        </div>
+        <div class="category-item category-child">
+          <i data-lucide="notebook-pen" width="17" height="17"></i>
+          <span>7月23日课堂记录</span>
+        </div>
+        <div class="category-item">
+          <i data-lucide="book-open" width="18" height="18"></i>
+          <span>消费者行为</span>
+        </div>
+        <div class="category-item category-child">
+          <i data-lucide="notebook-pen" width="17" height="17"></i>
+          <span>Week 4 · 品牌定位</span>
+        </div>
+        <div class="category-item category-child">
+          <i data-lucide="notebook-pen" width="17" height="17"></i>
+          <span>Marketing Essay</span>
+        </div>
+
+        <div class="sidebar-section-title"></div>
+        <div class="nav-item">
+          <i data-lucide="trash-2" width="19" height="19"></i>
+          <span>垃圾箱</span>
+        </div>
+      </div>
+
+      <div class="account">
+        <div class="avatar">K</div>
+        <div class="account-copy">
+          <div class="account-name">keyuliart</div>
+          <div class="account-plan">免费版</div>
+        </div>
+        <i data-lucide="chevrons-up-down" width="16" height="16"></i>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="home-content">
+        <div class="page-heading">
+          <div>
+            <h1 class="greeting">下午好</h1>
+            <p class="greeting-caption">听不懂的课，也能重新学明白。</p>
+          </div>
+          <span class="status-label"><span class="status-dot"></span>随时可以开始</span>
+        </div>
+
+        <section class="adaptive-shell" id="adaptiveShell">
+          <div class="conversation-panel">
+            <header class="conversation-header">
+              <div class="conversation-title">
+                <span class="ai-mark"><i data-lucide="sparkles" width="16" height="16"></i></span>
+                <span>这节课哪里没跟上？</span>
+              </div>
+              <span class="conversation-meta">直接说问题，也可以拖入内容</span>
+            </header>
+
+            <div class="chat-scroll" id="chatScroll">
+              <div class="starter" id="starter">
+                <h1>直接告诉 Capsu，你卡在哪里</h1>
+                <p>不用先选择工具。说出问题，或把手边的课程内容直接拖进来。</p>
+
+                <div class="initial-input-shell" id="initialDropZone">
+                  <textarea
+                    class="initial-input"
+                    id="initialInput"
+                    placeholder="拖入课件、课堂录音或笔记&#10;或直接描述你现在想解决的学习任务&#10;例如：帮我弄懂这节课的回归模型"
+                  ></textarea>
+                  <div class="initial-input-footer">
+                    <span class="drop-hint">也可以点击此处选择文件</span>
+                    <button class="initial-start-button" id="initialStartButton" type="button">
+                      立即开始
+                      <i data-lucide="arrow-up-right" width="16" height="16"></i>
+                    </button>
+                  </div>
+                  <input id="initialFileInput" type="file" hidden accept=".pdf,.ppt,.pptx,.doc,.docx,.txt,.md,.mp3,.wav,.m4a,.aac,audio/*">
+                </div>
+
+                <div class="example-heading">学习开始示例</div>
+                <div class="starter-options">
+                  <button class="starter-option" type="button" data-example="audio">
+                    <span class="example-label">示例 01</span>
+                    <strong>老师讲得太快，我有一段没跟上</strong>
+                    <small>把课堂录音拖进来，一边听一边问。</small>
+                    <span class="example-result">查看完整示例 <i data-lucide="arrow-right" width="13" height="13"></i></span>
+                  </button>
+                  <button class="starter-option" type="button" data-example="material">
+                    <span class="example-label">示例 02</span>
+                    <strong>这份课件看了两遍，还是抓不住重点</strong>
+                    <small>拖入资料，理清术语和课程逻辑。</small>
+                    <span class="example-result">查看完整示例 <i data-lucide="arrow-right" width="13" height="13"></i></span>
+                  </button>
+                  <button class="starter-option" type="button" data-example="question">
+                    <span class="example-label">示例 03</span>
+                    <strong>每个单词都认识，但我还是没懂这个概念</strong>
+                    <small>直接描述问题，不需要先准备文件。</small>
+                    <span class="example-result">查看完整示例 <i data-lucide="arrow-right" width="13" height="13"></i></span>
+                  </button>
+                  <button class="starter-option" type="button" data-example="flashcards">
+                    <span class="example-label">示例 04</span>
+                    <strong>这节课好像懂了，但复习时还是记不住</strong>
+                    <small>说出目标，把重点变成复习闪卡。</small>
+                    <span class="example-result">查看完整示例 <i data-lucide="arrow-right" width="13" height="13"></i></span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="messages" id="messages" aria-live="polite"></div>
+            </div>
+
+            <div class="chat-composer-wrap" id="chatComposerWrap">
+              <div class="chat-composer">
+                <textarea class="chat-input" id="chatInput" placeholder="继续问你没弄懂的地方……"></textarea>
+                <div class="composer-actions">
+                  <button class="send-button" id="sendButton" type="button" aria-label="发送">
+                    <i data-lucide="arrow-up" width="19" height="19"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="workbench" id="workbench" aria-live="polite">
+            <header class="workbench-header">
+              <div class="workbench-heading">
+                <p class="workbench-kicker">CAPSU 为当前任务准备</p>
+                <h2 id="workbenchTitle">学习工作区</h2>
+              </div>
+              <div class="workbench-controls">
+                <button class="icon-button" id="closeWorkbenchButton" type="button" title="关闭工作区">
+                  <i data-lucide="x" width="18" height="18"></i>
+                </button>
+              </div>
+            </header>
+            <div class="workbench-body" id="workbenchBody"></div>
+          </aside>
+
+          <section class="recording-workspace" id="recordingWorkspace" aria-label="录音学习空间">
+            <div class="recording-source">
+              <header class="recording-page-header">
+                <button class="icon-button" id="leaveRecordingButton" type="button" title="返回">
+                  <i data-lucide="arrow-left" width="18" height="18"></i>
+                </button>
+                <div class="recording-page-heading">
+                  <strong id="recordingTitle">课堂录音</strong>
+                  <small id="recordingSubtitle">音频与同步转写</small>
+                </div>
+                <span class="recording-status" id="recordingStatus">
+                  <span class="recording-status-dot"></span>
+                  <span id="recordingStatusText">转写已完成</span>
+                </span>
+              </header>
+
+              <div class="recording-source-body">
+                <div class="audio-console">
+                  <div class="audio-meta-row">
+                    <strong id="audioConsoleTitle">Week 3 Lecture Recording</strong>
+                    <span id="audioConsoleMeta">课堂录音 · 18:42</span>
+                  </div>
+                  <div class="audio-control-row">
+                    <button class="audio-play-button" id="audioPlayButton" type="button" aria-label="播放录音">
+                      <i data-lucide="play" width="17" height="17" fill="currentColor"></i>
+                    </button>
+                    <div class="audio-progress-wrap">
+                      <div class="audio-progress" id="audioProgress">
+                        <div class="audio-progress-value" id="audioProgressValue"></div>
+                      </div>
+                      <div class="audio-time-row">
+                        <span id="audioCurrentTime">05:14</span>
+                        <span id="audioDuration">18:42</span>
+                      </div>
+                    </div>
+                  </div>
+                  <audio id="recordingAudio" preload="metadata"></audio>
+                </div>
+
+                <div class="transcript-heading">
+                  <h2>同步转写</h2>
+                  <span>点击一段，围绕这里提问</span>
+                </div>
+                <div class="transcript-list" id="transcriptList"></div>
+              </div>
+            </div>
+
+            <aside class="recording-ai">
+              <header class="recording-ai-header">
+                <div class="recording-ai-title">
+                  <span class="ai-mark"><i data-lucide="sparkles" width="15" height="15"></i></span>
+                  <span>边听边问 Capsu</span>
+                </div>
+                <span class="recording-ai-context">依据当前录音</span>
+              </header>
+              <div class="recording-chat-scroll" id="recordingChatScroll">
+                <div class="recording-messages" id="recordingMessages"></div>
+              </div>
+              <div class="recording-context-note" id="recordingContextNote">
+                <i data-lucide="quote" width="13" height="13"></i>
+                <span id="recordingContextText"></span>
+              </div>
+              <div class="recording-composer">
+                <div class="recording-composer-box">
+                  <textarea class="recording-chat-input" id="recordingChatInput" placeholder="问问这段在讲什么，或让 Capsu 举个例子……"></textarea>
+                  <div class="recording-composer-actions">
+                    <button class="send-button" id="recordingSendButton" type="button" aria-label="发送">
+                      <i data-lucide="arrow-up" width="18" height="18"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </section>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status">
+    <i data-lucide="circle-check" width="19" height="19" color="#2878e8"></i>
+    <span id="toastText">操作已完成</span>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    const shell = document.getElementById("adaptiveShell");
+    const starter = document.getElementById("starter");
+    const messages = document.getElementById("messages");
+    const chatScroll = document.getElementById("chatScroll");
+    const initialInput = document.getElementById("initialInput");
+    const initialDropZone = document.getElementById("initialDropZone");
+    const initialFileInput = document.getElementById("initialFileInput");
+    const initialStartButton = document.getElementById("initialStartButton");
+    const chatComposerWrap = document.getElementById("chatComposerWrap");
+    const chatInput = document.getElementById("chatInput");
+    const sendButton = document.getElementById("sendButton");
+    const workbenchTitle = document.getElementById("workbenchTitle");
+    const workbenchBody = document.getElementById("workbenchBody");
+    const toast = document.getElementById("toast");
+    const toastText = document.getElementById("toastText");
+    const recordingTitle = document.getElementById("recordingTitle");
+    const recordingSubtitle = document.getElementById("recordingSubtitle");
+    const recordingStatus = document.getElementById("recordingStatus");
+    const recordingStatusText = document.getElementById("recordingStatusText");
+    const audioConsoleTitle = document.getElementById("audioConsoleTitle");
+    const audioConsoleMeta = document.getElementById("audioConsoleMeta");
+    const audioPlayButton = document.getElementById("audioPlayButton");
+    const audioProgress = document.getElementById("audioProgress");
+    const audioProgressValue = document.getElementById("audioProgressValue");
+    const audioCurrentTime = document.getElementById("audioCurrentTime");
+    const audioDuration = document.getElementById("audioDuration");
+    const recordingAudio = document.getElementById("recordingAudio");
+    const transcriptList = document.getElementById("transcriptList");
+    const recordingMessages = document.getElementById("recordingMessages");
+    const recordingChatScroll = document.getElementById("recordingChatScroll");
+    const recordingContextNote = document.getElementById("recordingContextNote");
+    const recordingContextText = document.getElementById("recordingContextText");
+    const recordingChatInput = document.getElementById("recordingChatInput");
+    let recordingTimer = null;
+    let recordingSeconds = 0;
+    let audioSimulationTimer = null;
+    let audioSimulationSeconds = 314;
+    let selectedTranscript = null;
+    let currentRecordingMode = "imported";
+
+    function showToast(message) {
+      toastText.textContent = message;
+      toast.classList.add("show");
+      window.setTimeout(() => toast.classList.remove("show"), 2200);
+    }
+
+    function refreshIcons() {
+      lucide.createIcons();
+    }
+
+    function scrollMessages() {
+      window.requestAnimationFrame(() => {
+        chatScroll.scrollTop = chatScroll.scrollHeight;
+      });
+    }
+
+    function addMessage(role, text, typing = false) {
+      const row = document.createElement("div");
+      row.className = `message ${role}`;
+
+      if (role === "assistant") {
+        const avatar = document.createElement("span");
+        avatar.className = "message-avatar";
+        avatar.innerHTML = '<i data-lucide="sparkles" width="14" height="14"></i>';
+        row.appendChild(avatar);
+      }
+
+      const bubble = document.createElement("div");
+      bubble.className = "message-bubble";
+      if (typing) {
+        bubble.innerHTML = '<span class="typing"><span></span><span></span><span></span></span>';
+        row.dataset.typing = "true";
+      } else {
+        bubble.textContent = text;
+      }
+      row.appendChild(bubble);
+      messages.appendChild(row);
+      refreshIcons();
+      scrollMessages();
+      return row;
+    }
+
+    function classifyPrompt(prompt) {
+      const text = prompt.toLowerCase();
+      if (/闪卡|测验|脑图|复习题|练习题/.test(text)) return "generate";
+      if (/录音|开始上课|记录课堂|课堂记录/.test(text)) return "record";
+      if (/课件|资料|pdf|ppt|阅读|文献|文件/.test(text)) return "upload";
+      if (/已有笔记|过去的笔记|课程笔记|继续学习|计量经济学|消费者行为/.test(text)) return "notes";
+      return null;
+    }
+
+    function assistantReply(type) {
+      const replies = {
+        upload: "可以，把这份课件放到右侧。我会先识别课程主题、专业术语和结构，再从你卡住的地方开始讲。",
+        record: "课堂记录已经为你准备好了。开始后我会保留老师的讲解内容，结束后可以继续追问没听懂的部分。",
+        notes: "我已经打开了你的课程与笔记。选择这次需要参考的内容后，我们就从已有进度继续。",
+        generate: "可以。我在右侧准备了学习内容生成器。你可以选择闪卡、测验或脑图，结果会继续留在当前学习里。",
+        none: "可以。我们先从你卡住的地方开始，不需要先上传任何内容。你可以继续告诉我：哪一步开始没跟上，或哪个概念最模糊。"
+      };
+      return replies[type || "none"];
+    }
+
+    function beginLearning() {
+      starter.classList.add("hidden");
+      chatComposerWrap.classList.add("visible");
+    }
+
+    function sendPrompt(value) {
+      const prompt = value.trim();
+      if (!prompt) return;
+
+      beginLearning();
+      addMessage("user", prompt);
+      chatInput.value = "";
+      initialInput.value = "";
+      const typingRow = addMessage("assistant", "", true);
+      const tool = classifyPrompt(prompt);
+
+      window.setTimeout(() => {
+        typingRow.remove();
+        if (tool === "record") {
+          enterRecordingWorkspace({ mode: "live" });
+          return;
+        }
+        addMessage("assistant", assistantReply(tool));
+        if (tool) openWorkbench(tool);
+      }, 520);
+    }
+
+    function openWorkbench(type) {
+      if (recordingTimer) {
+        window.clearInterval(recordingTimer);
+        recordingTimer = null;
+      }
+
+      shell.classList.add("has-workbench");
+      const renderers = {
+        upload: renderUpload,
+        notes: renderNotes,
+        generate: renderGenerator,
+        material: renderMaterialExample,
+        flashcards: renderFlashcardExample
+      };
+      (renderers[type] || renderUpload)();
+      refreshIcons();
+    }
+
+    function closeWorkbench() {
+      shell.classList.remove("has-workbench");
+      if (recordingTimer) {
+        window.clearInterval(recordingTimer);
+        recordingTimer = null;
+      }
+    }
+
+    const importedTranscript = [
+      ["04:48", "Before we interpret the coefficient, remember that correlation alone does not establish a causal relationship."],
+      ["05:14", "The key problem is that another variable may affect both study time and exam performance. We call this an omitted variable."],
+      ["05:52", "If motivation is not included in the model, the coefficient on study time may also capture the effect of motivation."],
+      ["06:31", "So the regression can describe how two variables move together, but stronger assumptions are needed before we make a causal claim."],
+      ["07:06", "Next week we will introduce instrumental variables as one way of dealing with this problem."]
+    ];
+
+    const liveTranscript = [
+      ["00:08", "Today we are moving from descriptive relationships to causal interpretation."],
+      ["00:21", "A coefficient tells us how the outcome changes when the explanatory variable changes, holding other factors constant."],
+      ["00:37", "That final phrase, holding other factors constant, is the important assumption to pay attention to."]
+    ];
+
+    function formatTime(totalSeconds) {
+      const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
+      const seconds = String(Math.floor(totalSeconds % 60)).padStart(2, "0");
+      return `${minutes}:${seconds}`;
+    }
+
+    function addRecordingMessage(role, text, typing = false) {
+      const row = document.createElement("div");
+      row.className = `message ${role}`;
+      if (role === "assistant") {
+        const avatar = document.createElement("span");
+        avatar.className = "message-avatar";
+        avatar.innerHTML = '<i data-lucide="sparkles" width="14" height="14"></i>';
+        row.appendChild(avatar);
+      }
+      const bubble = document.createElement("div");
+      bubble.className = "message-bubble";
+      bubble.innerHTML = typing
+        ? '<span class="typing"><span></span><span></span><span></span></span>'
+        : text;
+      row.appendChild(bubble);
+      recordingMessages.appendChild(row);
+      refreshIcons();
+      window.requestAnimationFrame(() => {
+        recordingChatScroll.scrollTop = recordingChatScroll.scrollHeight;
+      });
+      return row;
+    }
+
+    function renderTranscript(rows) {
+      transcriptList.innerHTML = rows.map(([time, copy], index) => `
+        <button class="transcript-row${index === 1 && currentRecordingMode === "imported" ? " selected" : ""}" type="button" data-time="${time}" data-copy="${copy.replace(/"/g, "&quot;")}">
+          <span class="transcript-time">${time}</span>
+          <span class="transcript-copy">${copy}</span>
+        </button>
+      `).join("");
+
+      transcriptList.querySelectorAll(".transcript-row").forEach((row) => {
+        row.addEventListener("click", () => {
+          transcriptList.querySelectorAll(".transcript-row").forEach((item) => item.classList.remove("selected"));
+          row.classList.add("selected");
+          selectedTranscript = { time: row.dataset.time, copy: row.dataset.copy };
+          recordingContextText.textContent = `已选中 ${selectedTranscript.time} 的课堂内容`;
+          recordingContextNote.classList.add("visible");
+          recordingChatInput.focus();
+        });
+      });
+    }
+
+    function stopAudioPlayback() {
+      recordingAudio.pause();
+      if (audioSimulationTimer) {
+        window.clearInterval(audioSimulationTimer);
+        audioSimulationTimer = null;
+      }
+      audioPlayButton.innerHTML = '<i data-lucide="play" width="17" height="17" fill="currentColor"></i>';
+      audioPlayButton.setAttribute("aria-label", currentRecordingMode === "live" ? "继续录音" : "播放录音");
+      refreshIcons();
+    }
+
+    function updateImportedAudioProgress() {
+      const duration = Number.isFinite(recordingAudio.duration) ? recordingAudio.duration : 1122;
+      const current = recordingAudio.src ? recordingAudio.currentTime : audioSimulationSeconds;
+      audioProgressValue.style.width = `${Math.min(100, (current / duration) * 100)}%`;
+      audioCurrentTime.textContent = formatTime(current);
+      audioDuration.textContent = formatTime(duration);
+    }
+
+    function toggleImportedAudio() {
+      const isPlaying = recordingAudio.src ? !recordingAudio.paused : Boolean(audioSimulationTimer);
+      if (isPlaying) {
+        stopAudioPlayback();
+        return;
+      }
+
+      audioPlayButton.innerHTML = '<i data-lucide="pause" width="17" height="17" fill="currentColor"></i>';
+      audioPlayButton.setAttribute("aria-label", "暂停录音");
+      refreshIcons();
+      if (recordingAudio.src) {
+        recordingAudio.play();
+      } else {
+        audioSimulationTimer = window.setInterval(() => {
+          audioSimulationSeconds = Math.min(1122, audioSimulationSeconds + 1);
+          updateImportedAudioProgress();
+          if (audioSimulationSeconds >= 1122) stopAudioPlayback();
+        }, 1000);
+      }
+    }
+
+    function toggleLiveRecording() {
+      if (recordingTimer) {
+        window.clearInterval(recordingTimer);
+        recordingTimer = null;
+        recordingStatusText.textContent = "录音已暂停";
+        recordingStatus.classList.remove("live");
+        audioPlayButton.innerHTML = '<i data-lucide="play" width="17" height="17" fill="currentColor"></i>';
+        showToast("课堂录音已暂停");
+      } else {
+        recordingStatusText.textContent = "正在录音";
+        recordingStatus.classList.add("live");
+        audioPlayButton.innerHTML = '<i data-lucide="pause" width="17" height="17" fill="currentColor"></i>';
+        recordingTimer = window.setInterval(() => {
+          recordingSeconds += 1;
+          audioCurrentTime.textContent = formatTime(recordingSeconds);
+          audioProgressValue.style.width = `${Math.min(100, 8 + recordingSeconds / 6)}%`;
+        }, 1000);
+      }
+      refreshIcons();
+    }
+
+    function enterRecordingWorkspace({ mode = "imported", file = null } = {}) {
+      closeWorkbench();
+      currentRecordingMode = mode;
+      selectedTranscript = null;
+      recordingContextNote.classList.remove("visible");
+      recordingMessages.innerHTML = "";
+      recordingAudio.removeAttribute("src");
+      recordingAudio.load();
+      stopAudioPlayback();
+      shell.classList.add("recording-mode");
+
+      if (mode === "live") {
+        recordingSeconds = 0;
+        recordingTitle.textContent = "课堂实时记录";
+        recordingSubtitle.textContent = "实时转写与 AI 对话";
+        recordingStatus.classList.add("live");
+        recordingStatusText.textContent = "正在录音";
+        audioConsoleTitle.textContent = "7月23日课堂记录";
+        audioConsoleMeta.textContent = "实时记录";
+        audioCurrentTime.textContent = "00:00";
+        audioDuration.textContent = "录音中";
+        audioProgressValue.style.width = "8%";
+        audioPlayButton.classList.add("live-control");
+        audioPlayButton.innerHTML = '<i data-lucide="pause" width="17" height="17" fill="currentColor"></i>';
+        renderTranscript(liveTranscript);
+        addRecordingMessage("assistant", "我正在同步记录课堂内容。你可以随时针对老师刚讲到的部分提问，不需要等录音结束。");
+        recordingTimer = window.setInterval(() => {
+          recordingSeconds += 1;
+          audioCurrentTime.textContent = formatTime(recordingSeconds);
+          audioProgressValue.style.width = `${Math.min(100, 8 + recordingSeconds / 6)}%`;
+        }, 1000);
+      } else {
+        recordingTitle.textContent = file?.name || "Week 3 Lecture Recording.m4a";
+        recordingSubtitle.textContent = "录音播放与同步转写";
+        recordingStatus.classList.remove("live");
+        recordingStatusText.textContent = "转写已完成";
+        audioConsoleTitle.textContent = (file?.name || "Week 3 Lecture Recording.m4a").replace(/\.[^.]+$/, "");
+        audioConsoleMeta.textContent = "课堂录音 · 已完成转写";
+        audioSimulationSeconds = 314;
+        audioCurrentTime.textContent = "05:14";
+        audioDuration.textContent = "18:42";
+        audioProgressValue.style.width = "28%";
+        audioPlayButton.classList.remove("live-control");
+        audioPlayButton.innerHTML = '<i data-lucide="play" width="17" height="17" fill="currentColor"></i>';
+        if (file) {
+          recordingAudio.src = URL.createObjectURL(file);
+        }
+        renderTranscript(importedTranscript);
+        selectedTranscript = { time: importedTranscript[1][0], copy: importedTranscript[1][1] };
+        addRecordingMessage("assistant", "录音和转写已经放在左侧。最可能漏听的是 05:14：老师开始解释遗漏变量为什么会影响回归结果。你可以边听边问我。");
+      }
+      refreshIcons();
+    }
+
+    function leaveRecordingWorkspace() {
+      stopAudioPlayback();
+      if (recordingTimer) {
+        window.clearInterval(recordingTimer);
+        recordingTimer = null;
+      }
+      shell.classList.remove("recording-mode");
+      recordingStatus.classList.remove("live");
+    }
+
+    function sendRecordingPrompt() {
+      const prompt = recordingChatInput.value.trim();
+      if (!prompt) return;
+      const context = selectedTranscript ? `（针对 ${selectedTranscript.time}）` : "";
+      addRecordingMessage("user", `${context}${prompt}`);
+      recordingChatInput.value = "";
+      recordingContextNote.classList.remove("visible");
+      const typingRow = addRecordingMessage("assistant", "", true);
+      window.setTimeout(() => {
+        typingRow.remove();
+        const answer = selectedTranscript
+          ? "这里的核心是：老师提醒你不要把“同时变化”直接当成“因果关系”。以学习时间和成绩为例，动机可能同时影响二者；如果模型漏掉动机，学习时间的系数就会混入动机的影响。"
+          : "可以。你继续播放或查看左侧转写，我会始终依据这段课堂录音回答，并帮你回到对应时间点。";
+        addRecordingMessage("assistant", answer);
+      }, 480);
+    }
+
+    function renderContextChoice() {
+      workbenchTitle.textContent = "补充这次学习的内容";
+      workbenchBody.innerHTML = `
+        <div class="recommendation">根据你刚才的描述，Capsu 需要一点课程上下文。选择你现在手边最方便的一种即可。</div>
+        <div class="tool-choice-list">
+          <button class="tool-choice" type="button" data-workbench-tool="upload">
+            <span class="tool-choice-icon"><i data-lucide="paperclip" width="19" height="19"></i></span>
+            <span><strong>我有课件或阅读材料</strong><small>上传 PDF、PPT、Word 或图片</small></span>
+            <i data-lucide="chevron-right" width="17" height="17"></i>
+          </button>
+          <button class="tool-choice" type="button" data-workbench-tool="notes">
+            <span class="tool-choice-icon"><i data-lucide="notebook-tabs" width="19" height="19"></i></span>
+            <span><strong>内容已经在 Capsu 里</strong><small>选择一门课程或其中几份笔记</small></span>
+            <i data-lucide="chevron-right" width="17" height="17"></i>
+          </button>
+          <button class="tool-choice" type="button" data-workbench-tool="record">
+            <span class="tool-choice-icon"><i data-lucide="mic" width="19" height="19"></i></span>
+            <span><strong>我正在上课</strong><small>进入课堂实时记录页面</small></span>
+            <i data-lucide="chevron-right" width="17" height="17"></i>
+          </button>
+        </div>`;
+      bindWorkbenchToolButtons();
+    }
+
+    function renderUpload() {
+      workbenchTitle.textContent = "添加课程资料";
+      workbenchBody.innerHTML = `
+        <div class="recommendation">把与当前问题相关的资料放在这里。Capsu 会先读懂来源，再继续回答。</div>
+        <label class="drop-zone" id="dropZone" for="adaptiveFileInput">
+          <span>
+            <span class="drop-zone-icon"><i data-lucide="upload-cloud" width="23" height="23"></i></span>
+            <strong>拖拽文件到这里，或点击选择</strong>
+            <p>支持 PDF、PPT、Word 和图片</p>
+          </span>
+        </label>
+        <input id="adaptiveFileInput" type="file" hidden accept=".pdf,.ppt,.pptx,.doc,.docx,.txt,.md,image/*">
+        <div class="selected-file" id="selectedFile">
+          <span class="tool-choice-icon"><i data-lucide="file-text" width="18" height="18"></i></span>
+          <div class="selected-file-copy">
+            <div class="selected-file-name" id="selectedFileName"></div>
+            <div class="selected-file-meta">已加入当前学习 · 等待处理</div>
+          </div>
+          <i data-lucide="circle-check" width="18" height="18" color="#2878e8"></i>
+        </div>
+        <button class="workbench-primary" id="useMaterialButton" type="button">
+          <i data-lucide="sparkles" width="16" height="16"></i>
+          用这份资料继续
+        </button>`;
+
+      const input = document.getElementById("adaptiveFileInput");
+      const dropZone = document.getElementById("dropZone");
+      const selectedFile = document.getElementById("selectedFile");
+      const selectedFileName = document.getElementById("selectedFileName");
+
+      function selectFile(file) {
+        if (!file) return;
+        selectedFileName.textContent = file.name;
+        selectedFile.classList.add("show");
+        refreshIcons();
+      }
+
+      input.addEventListener("change", () => selectFile(input.files[0]));
+      ["dragenter", "dragover"].forEach((eventName) => {
+        dropZone.addEventListener(eventName, (event) => {
+          event.preventDefault();
+          dropZone.classList.add("dragging");
+        });
+      });
+      ["dragleave", "drop"].forEach((eventName) => {
+        dropZone.addEventListener(eventName, (event) => {
+          event.preventDefault();
+          dropZone.classList.remove("dragging");
+        });
+      });
+      dropZone.addEventListener("drop", (event) => selectFile(event.dataTransfer.files[0]));
+      document.getElementById("useMaterialButton").addEventListener("click", () => {
+        if (!selectedFile.classList.contains("show")) {
+          showToast("请先选择一份课程资料");
+          return;
+        }
+        showToast("资料已加入当前学习");
+        addMessage("assistant", "资料已经加入。我会先提取课程主题、关键术语和内容结构，然后继续回答你刚才的问题。");
+      });
+    }
+
+    function renderNotes() {
+      workbenchTitle.textContent = "选择已有学习内容";
+      workbenchBody.innerHTML = `
+        <div class="recommendation">可以勾选整门课程，也可以只选择与当前问题有关的某几份笔记。</div>
+        <div class="course-tree">
+          <div class="course-block">
+            <div class="course-row selectable-row">
+              <span class="fake-check"><i data-lucide="check" width="12" height="12"></i></span>
+              <i data-lucide="book-open" width="17" height="17"></i>
+              <span>计量经济学 · 整门课程</span>
+            </div>
+            <div class="note-row selectable-row selected">
+              <span class="fake-check"><i data-lucide="check" width="12" height="12"></i></span>
+              <span>Week 3 · 回归模型</span>
+            </div>
+            <div class="note-row selectable-row">
+              <span class="fake-check"><i data-lucide="check" width="12" height="12"></i></span>
+              <span>7月23日课堂记录</span>
+            </div>
+          </div>
+          <div class="course-block">
+            <div class="course-row selectable-row">
+              <span class="fake-check"><i data-lucide="check" width="12" height="12"></i></span>
+              <i data-lucide="book-open" width="17" height="17"></i>
+              <span>消费者行为 · 整门课程</span>
+            </div>
+            <div class="note-row selectable-row">
+              <span class="fake-check"><i data-lucide="check" width="12" height="12"></i></span>
+              <span>Week 4 · 品牌定位</span>
+            </div>
+            <div class="note-row selectable-row">
+              <span class="fake-check"><i data-lucide="check" width="12" height="12"></i></span>
+              <span>Marketing Essay</span>
+            </div>
+          </div>
+        </div>
+        <button class="workbench-primary" id="useNotesButton" type="button">
+          <i data-lucide="link" width="16" height="16"></i>
+          引用所选内容
+        </button>`;
+
+      document.querySelectorAll(".selectable-row").forEach((row) => {
+        row.addEventListener("click", () => row.classList.toggle("selected"));
+      });
+      document.getElementById("useNotesButton").addEventListener("click", () => {
+        const count = document.querySelectorAll(".selectable-row.selected").length;
+        if (!count) {
+          showToast("请至少选择一项学习内容");
+          return;
+        }
+        showToast(`已引用 ${count} 项学习内容`);
+        addMessage("assistant", `已把你选择的 ${count} 项内容加入当前学习。我会结合这些笔记继续回答，而不会改动原笔记。`);
+      });
+    }
+
+    function renderGenerator() {
+      workbenchTitle.textContent = "生成学习内容";
+      workbenchBody.innerHTML = `
+        <div class="recommendation">Capsu 会基于当前对话与已引用内容生成结果，并保留在这次学习中。</div>
+        <div class="generate-grid">
+          <button class="generate-option selected" type="button" data-result="闪卡">
+            <i data-lucide="layers-3" width="20" height="20"></i><strong>闪卡</strong>
+          </button>
+          <button class="generate-option" type="button" data-result="测验">
+            <i data-lucide="list-checks" width="20" height="20"></i><strong>测验</strong>
+          </button>
+          <button class="generate-option" type="button" data-result="脑图">
+            <i data-lucide="network" width="20" height="20"></i><strong>脑图</strong>
+          </button>
+        </div>
+        <button class="workbench-primary" id="generateButton" type="button">
+          <i data-lucide="sparkles" width="16" height="16"></i>
+          生成闪卡
+        </button>
+        <div class="result-stack" id="resultStack"></div>`;
+
+      let selectedResult = "闪卡";
+      document.querySelectorAll(".generate-option").forEach((option) => {
+        option.addEventListener("click", () => {
+          document.querySelectorAll(".generate-option").forEach((item) => item.classList.remove("selected"));
+          option.classList.add("selected");
+          selectedResult = option.dataset.result;
+          document.getElementById("generateButton").lastChild.textContent = ` 生成${selectedResult}`;
+        });
+      });
+
+      document.getElementById("generateButton").addEventListener("click", () => {
+        const stack = document.getElementById("resultStack");
+        const previews = {
+          闪卡: [
+            ["内生性 Endogeneity", "解释变量与误差项相关，导致回归估计产生偏误。"],
+            ["遗漏变量偏误", "一个未被纳入模型的变量同时影响解释变量和结果变量。"],
+            ["工具变量 IV", "通过满足相关性与外生性的变量识别因果关系。"]
+          ],
+          测验: [
+            ["问题 1", "为什么内生性会让 OLS 估计不再可靠？"],
+            ["问题 2", "工具变量需要满足哪两个核心条件？"],
+            ["问题 3", "请举出一个可能造成遗漏变量偏误的例子。"]
+          ],
+          脑图: [
+            ["中心主题", "回归模型中的内生性"],
+            ["原因", "遗漏变量 · 反向因果 · 测量误差"],
+            ["处理方式", "工具变量 · 固定效应 · 实验设计"]
+          ]
+        };
+        stack.innerHTML = previews[selectedResult].map(([label, copy]) => `
+          <div class="flashcard-preview"><small>${label}</small><p>${copy}</p></div>
+        `).join("");
+        stack.classList.add("show");
+        showToast(`${selectedResult}已生成`);
+      });
+    }
+
+    function renderMaterialExample(fileName = "Week 3 Regression Models.pdf") {
+      workbenchTitle.textContent = "课程资料 · 回归模型";
+      workbenchBody.innerHTML = `
+        <div class="recommendation">Capsu 先保留资料来源，再把术语、重点和课程逻辑放到同一个阅读视图中。</div>
+        <div class="selected-file show">
+          <span class="tool-choice-icon"><i data-lucide="file-text" width="18" height="18"></i></span>
+          <div class="selected-file-copy">
+            <div class="selected-file-name">${fileName}</div>
+            <div class="selected-file-meta">24 页 · 已识别 3 个核心部分</div>
+          </div>
+          <i data-lucide="circle-check" width="18" height="18" color="#2878e8"></i>
+        </div>
+        <div class="result-stack show">
+          <div class="flashcard-preview"><small>这份资料在讲什么</small><p>从变量关系开始，解释线性回归如何估计影响，并说明为什么“相关”不等于“因果”。</p></div>
+          <div class="flashcard-preview"><small>先弄懂这 3 个词</small><p>因变量 · 回归系数 · 遗漏变量偏误</p></div>
+          <div class="flashcard-preview"><small>课程逻辑</small><p>描述关系 → 建立模型 → 检查假设 → 判断结果是否可以解释为因果。</p></div>
+        </div>`;
+    }
+
+    function renderFlashcardExample() {
+      workbenchTitle.textContent = "复习闪卡 · 回归模型";
+      workbenchBody.innerHTML = `
+        <div class="recommendation">这些闪卡来自当前课程资料与刚才的追问，可以继续修改，也会保留在本次学习中。</div>
+        <div class="result-stack show">
+          <div class="flashcard-preview"><small>卡片 1 · 相关与因果</small><p>为什么两个变量相关，仍不能直接说明其中一个导致另一个？</p></div>
+          <div class="flashcard-preview"><small>卡片 2 · 遗漏变量</small><p>一个未进入模型的变量同时影响 X 和 Y，会让回归系数产生什么问题？</p></div>
+          <div class="flashcard-preview"><small>卡片 3 · 回归系数</small><p>在其他条件不变时，X 每增加一个单位，Y 的平均变化量如何表示？</p></div>
+        </div>
+        <button class="workbench-primary" id="reviewCardsButton" type="button">
+          <i data-lucide="play" width="16" height="16"></i>
+          开始复习
+        </button>`;
+
+      document.getElementById("reviewCardsButton").addEventListener("click", () => {
+        showToast("已进入闪卡复习");
+      });
+    }
+
+    function startFileFlow(file) {
+      if (!file) return;
+      const isAudio = file.type.startsWith("audio/") || /\.(mp3|wav|m4a|aac)$/i.test(file.name);
+      beginLearning();
+      addMessage("user", `已拖入：${file.name}`);
+      const typingRow = addMessage("assistant", "", true);
+
+      window.setTimeout(() => {
+        typingRow.remove();
+        if (isAudio) {
+          enterRecordingWorkspace({ mode: "imported", file });
+        } else {
+          addMessage("assistant", "资料已经加入。我会先理清这份内容在讲什么、哪些术语最关键，再从最容易卡住的地方开始解释。");
+          openWorkbench("material");
+          renderMaterialExample(file.name);
+        }
+      }, 520);
+    }
+
+    function runExample(type) {
+      const examples = {
+        audio: {
+          prompt: "老师讲得太快，我有一段没跟上。这里有课堂录音。",
+          reply: "",
+          recording: true
+        },
+        material: {
+          prompt: "这份课件我看了两遍，还是抓不住重点。",
+          reply: "我先把整份课件的主线压缩成三个部分，并挑出理解后文必须先弄懂的术语。你可以从右侧任意一点继续追问。",
+          workspace: "material"
+        },
+        question: {
+          prompt: "我没理解回归模型，能结合简单例子重新讲一遍吗？",
+          reply: "可以。先把回归模型想成“用已经知道的信息，估计另一个结果会怎样变化”。例如我们想知道学习时间是否影响成绩：学习时间是输入，成绩是结果。模型会估计，在其他条件不变时，多学一小时，成绩平均会变化多少。你卡住的是这层关系，还是“其他条件不变”这句话？",
+          workspace: null
+        },
+        flashcards: {
+          prompt: "把这节课没弄懂的重点整理成一组复习闪卡。",
+          reply: "我根据刚才的课程内容和疑问整理了 3 张闪卡。它们不是一份新的泛化总结，而是专门检查你容易混淆的几个点。",
+          workspace: "flashcards"
+        }
+      };
+      const example = examples[type];
+      if (!example) return;
+
+      beginLearning();
+      addMessage("user", example.prompt);
+      const typingRow = addMessage("assistant", "", true);
+      window.setTimeout(() => {
+        typingRow.remove();
+        if (example.recording) {
+          enterRecordingWorkspace({ mode: "imported" });
+          return;
+        }
+        addMessage("assistant", example.reply);
+        if (example.workspace) openWorkbench(example.workspace);
+      }, 420);
+    }
+
+    function bindWorkbenchToolButtons() {
+      document.querySelectorAll("[data-workbench-tool]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (button.dataset.workbenchTool === "record") {
+            enterRecordingWorkspace({ mode: "live" });
+            return;
+          }
+          openWorkbench(button.dataset.workbenchTool);
+        });
+      });
+    }
+
+    document.querySelectorAll(".starter-option").forEach((button) => {
+      button.addEventListener("click", () => runExample(button.dataset.example));
+    });
+
+    initialStartButton.addEventListener("click", () => sendPrompt(initialInput.value));
+    initialInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendPrompt(initialInput.value);
+      }
+    });
+
+    initialDropZone.addEventListener("click", (event) => {
+      if (event.target === initialDropZone || event.target.classList.contains("drop-hint")) {
+        initialFileInput.click();
+      }
+    });
+
+    initialFileInput.addEventListener("change", () => startFileFlow(initialFileInput.files[0]));
+
+    ["dragenter", "dragover"].forEach((eventName) => {
+      initialDropZone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        initialDropZone.classList.add("dragging");
+      });
+    });
+
+    ["dragleave", "drop"].forEach((eventName) => {
+      initialDropZone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        initialDropZone.classList.remove("dragging");
+      });
+    });
+
+    initialDropZone.addEventListener("drop", (event) => {
+      startFileFlow(event.dataTransfer.files[0]);
+    });
+
+    sendButton.addEventListener("click", () => sendPrompt(chatInput.value));
+    chatInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendPrompt(chatInput.value);
+      }
+    });
+
+    document.getElementById("closeWorkbenchButton").addEventListener("click", closeWorkbench);
+    document.getElementById("leaveRecordingButton").addEventListener("click", leaveRecordingWorkspace);
+    audioPlayButton.addEventListener("click", () => {
+      if (currentRecordingMode === "live") toggleLiveRecording();
+      else toggleImportedAudio();
+    });
+    recordingAudio.addEventListener("timeupdate", updateImportedAudioProgress);
+    recordingAudio.addEventListener("play", () => {
+      audioPlayButton.innerHTML = '<i data-lucide="pause" width="17" height="17" fill="currentColor"></i>';
+      refreshIcons();
+    });
+    recordingAudio.addEventListener("pause", () => {
+      if (currentRecordingMode === "imported") {
+        audioPlayButton.innerHTML = '<i data-lucide="play" width="17" height="17" fill="currentColor"></i>';
+        refreshIcons();
+      }
+    });
+    audioProgress.addEventListener("click", (event) => {
+      if (currentRecordingMode === "live") return;
+      const ratio = event.offsetX / audioProgress.clientWidth;
+      if (recordingAudio.src && Number.isFinite(recordingAudio.duration)) {
+        recordingAudio.currentTime = ratio * recordingAudio.duration;
+      } else {
+        audioSimulationSeconds = ratio * 1122;
+      }
+      updateImportedAudioProgress();
+    });
+    document.getElementById("recordingSendButton").addEventListener("click", sendRecordingPrompt);
+    recordingChatInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendRecordingPrompt();
+      }
+    });
+  </script>
+</body>
+</html>
